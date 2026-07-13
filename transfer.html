@@ -187,7 +187,17 @@
                     <!-- Özel Notunuz -->
                     <div>
                         <label for="ozel_not" id="lbl_special_note" data-translate="label_special_note" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Özel Notunuz</label>
-                        <textarea id="ozel_not" rows="2" class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs resize-none" placeholder="Varsa özel istekleriniz, bebek koltuğu talebi vb."></textarea>
+                        <textarea id="ozel_not" rows="2" class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs resize-none" placeholder="Varsa diğer özel istekleriniz..."></textarea>
+                        <div class="flex items-center gap-4 mt-2">
+                            <label class="flex items-center space-x-1.5 cursor-pointer">
+                                <input type="checkbox" id="check_booster" class="h-3.5 w-3.5 rounded border-slate-800 bg-slate-950 text-amber-500 focus:ring-amber-500/30 accent-amber-500 cursor-pointer">
+                                <span class="text-[10px] text-slate-300 font-medium" data-translate="label_booster">Yükseltici</span>
+                            </label>
+                            <label class="flex items-center space-x-1.5 cursor-pointer">
+                                <input type="checkbox" id="check_baby_seat" class="h-3.5 w-3.5 rounded border-slate-800 bg-slate-950 text-amber-500 focus:ring-amber-500/30 accent-amber-500 cursor-pointer">
+                                <span class="text-[10px] text-slate-300 font-medium" data-translate="label_baby_seat">Bebek Koltuğu</span>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- KVKK Consent Checkbox -->
@@ -652,7 +662,9 @@
                 section_pickup: "Alınış Detayları",
                 placeholder_hotel: "Otel adı veya açık adres",
                 placeholder_flight_no: "Örn: TK1834",
-                vehicle_visual_notice: "* Araç fotoğrafları görsel amaçlıdır."
+                vehicle_visual_notice: "* Araç fotoğrafları görsel amaçlıdır.",
+                label_baby_seat: "Bebek Koltuğu",
+                label_booster: "Yükseltici"
             },
             en: {
                 title: "Egece Transfer - Airport & Hotel VIP Transfer",
@@ -735,7 +747,9 @@
                 section_pickup: "Pickup Details",
                 placeholder_hotel: "Hotel name or full address",
                 placeholder_flight_no: "Ex: TK1834",
-                vehicle_visual_notice: "* Vehicle photos are for visual purposes only."
+                vehicle_visual_notice: "* Vehicle photos are for visual purposes only.",
+                label_baby_seat: "Baby Seat",
+                label_booster: "Booster Seat"
             },
             ru: {
                 title: "Egece Transfer - VIP трансфер из аэропорта и в отель",
@@ -818,7 +832,9 @@
                 section_pickup: "Детали посадки",
                 placeholder_hotel: "Название отеля или полный адрес",
                 placeholder_flight_no: "Напр: TK1834",
-                vehicle_visual_notice: "* Фотографии автомобилей представлены только для визуализации."
+                vehicle_visual_notice: "* Фотографии автомобилей представлены только для визуализации.",
+                label_baby_seat: "Детское кресло",
+                label_booster: "Бустер"
             },
             de: {
                 title: "Egece Transfer - Flughafen & Hotel VIP Transfer",
@@ -901,7 +917,9 @@
                 section_pickup: "Abholdetails",
                 placeholder_hotel: "Hotelname oder vollständige Adresse",
                 placeholder_flight_no: "Bsp: TK1834",
-                vehicle_visual_notice: "* Fahrzeugfotos dienen nur zu visuellen Zwecken."
+                vehicle_visual_notice: "* Fahrzeugfotos dienen nur zu visuellen Zwecken.",
+                label_baby_seat: "Kindersitz",
+                label_booster: "Sitzerhöhung"
             },
             pl: {
                 title: "Egece Transfer - VIP Transfer Lotniskowy i Hotelowy",
@@ -984,7 +1002,9 @@
                 section_pickup: "Szczegóły Odbioru",
                 placeholder_hotel: "Nazwa hotelu lub pełny adres",
                 placeholder_flight_no: "Np: TK1834",
-                vehicle_visual_notice: "* Zdjęcia pojazdów służą wyłącznie do celów wizualnych."
+                vehicle_visual_notice: "* Zdjęcia pojazdów służą wyłącznie do celów wizualnych.",
+                label_baby_seat: "Fotelik dla dziecka",
+                label_booster: "Podstawka podwyższająca"
             },
             kk: {
                 title: "Egece Transfer - Әуежай және Қонақ үй VIP трансфері",
@@ -1067,7 +1087,9 @@
                 section_pickup: "Алу мәліметтері",
                 placeholder_hotel: "Қонақ үй атауы немесе толық мекенжай",
                 placeholder_flight_no: "Мысалы: TK1834",
-                vehicle_visual_notice: "* Көлік суреттері тек көрнекі мақсатта берілген."
+                vehicle_visual_notice: "* Көлік суреттері тек көрнекі мақсатта берілген.",
+                label_baby_seat: "Балалар орындығы",
+                label_booster: "Бустер"
             }
         };
 
@@ -1469,7 +1491,18 @@
             const secilen_arac = selectedVehicleEl ? selectedVehicleEl.value : "Bilinmiyor";
             
             const calculatedPrice = window.lastCalculatedPrice || 0;
-            const ozel_not = document.getElementById("ozel_not").value.trim();
+            
+            const babySeatEl = document.getElementById("check_baby_seat");
+            const boosterEl = document.getElementById("check_booster");
+            let extras = [];
+            if (boosterEl && boosterEl.checked) extras.push(TRANSLATIONS[currentLang]?.label_booster || "Yükseltici");
+            if (babySeatEl && babySeatEl.checked) extras.push(TRANSLATIONS[currentLang]?.label_baby_seat || "Bebek Koltuğu");
+            
+            let ozel_not_str = document.getElementById("ozel_not").value.trim();
+            if (extras.length > 0) {
+                ozel_not_str += ozel_not_str ? ` | Ekstralar: ${extras.join(", ")}` : `Ekstralar: ${extras.join(", ")}`;
+            }
+            const ozel_not = ozel_not_str;
 
             const isAirportInvolved = (nereden === "Antalya Havalimanı (AYT)" || nereye === "Antalya Havalimanı (AYT)");
             
