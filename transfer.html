@@ -411,31 +411,9 @@
                             <div class="mt-4">
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2" data-translate="label_vehicle">Araç Seçimi</label>
                                 <div class="grid grid-cols-1 gap-3" id="vehicle_selection_container">
-                                    <!-- Transporter -->
-                                    <label class="cursor-pointer relative block">
-                                        <input type="radio" name="arac_secimi" value="VW Transporter" class="peer sr-only" checked>
-                                        <div class="rounded-xl border border-slate-800 bg-slate-950/50 backdrop-blur-sm p-3 flex items-center peer-checked:border-amber-500 peer-checked:bg-slate-900/60 peer-checked:backdrop-blur-md transition-all hover:border-slate-600 gap-4 overflow-hidden relative">
-                                            <div class="absolute top-0 left-0 bg-amber-500 text-slate-950 text-[9px] font-extrabold px-2 py-0.5 rounded-br-lg uppercase tracking-wider z-10 shadow-md">VIP</div>
-                                            <!-- Image -->
-                                            <div class="w-2/5 flex-shrink-0 relative h-20 flex items-center justify-center">
-                                                <img src="transporter.png" alt="Transporter" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] mix-blend-screen brightness-110">
-                                            </div>
-                                            <!-- Details -->
-                                            <div class="w-3/5 flex flex-col justify-center text-left">
-                                                <span class="block text-sm font-extrabold text-white mb-1.5 drop-shadow-md">VW Transporter</span>
-                                                <div class="grid grid-cols-2 gap-y-1 gap-x-1 text-[9px] text-slate-300 font-medium">
-                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">📶</span> Ücretsiz Wifi</div>
-                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💺</span> 6 Koltuk</div>
-                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">🧳</span> 6 Bagaj</div>
-                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💳</span> Araçta Ödeme</div>
-                                                    <div class="flex items-center gap-1 col-span-2"><span class="text-amber-500 text-[10px]">👨‍✈️</span> Profesyonel Sürücü</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </label>
                                     <!-- Vito -->
                                     <label class="cursor-pointer relative block">
-                                        <input type="radio" name="arac_secimi" value="Mercedes Vito VIP" class="peer sr-only">
+                                        <input type="radio" name="arac_secimi" value="Mercedes Vito VIP" class="peer sr-only" checked>
                                         <div class="rounded-xl border border-slate-800 bg-slate-950/50 backdrop-blur-sm p-3 flex items-center peer-checked:border-amber-500 peer-checked:bg-slate-900/60 peer-checked:backdrop-blur-md transition-all hover:border-slate-600 gap-4 overflow-hidden relative">
                                             <div class="absolute top-0 left-0 bg-amber-500 text-slate-950 text-[9px] font-extrabold px-2 py-0.5 rounded-br-lg uppercase tracking-wider z-10 shadow-md">VIP</div>
                                             <!-- Image -->
@@ -446,9 +424,29 @@
                                             <div class="w-3/5 flex flex-col justify-center text-left">
                                                 <span class="block text-sm font-extrabold text-white mb-1.5 drop-shadow-md">Mercedes Vito</span>
                                                 <div class="grid grid-cols-2 gap-y-1 gap-x-1 text-[9px] text-slate-300 font-medium">
-                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">📶</span> Ücretsiz Wifi</div>
                                                     <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💺</span> 6 Koltuk</div>
-                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">🧳</span> 6 Bagaj</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">🧳</span> Bagaj</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💳</span> Araçta Ödeme</div>
+                                                    <div class="flex items-center gap-1 col-span-2"><span class="text-amber-500 text-[10px]">👨‍✈️</span> Profesyonel Sürücü</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <!-- Transporter -->
+                                    <label class="cursor-pointer relative block">
+                                        <input type="radio" name="arac_secimi" value="VW Transporter" class="peer sr-only">
+                                        <div class="rounded-xl border border-slate-800 bg-slate-950/50 backdrop-blur-sm p-3 flex items-center peer-checked:border-amber-500 peer-checked:bg-slate-900/60 peer-checked:backdrop-blur-md transition-all hover:border-slate-600 gap-4 overflow-hidden relative">
+                                            <div class="absolute top-0 left-0 bg-amber-500 text-slate-950 text-[9px] font-extrabold px-2 py-0.5 rounded-br-lg uppercase tracking-wider z-10 shadow-md">VIP</div>
+                                            <!-- Image -->
+                                            <div class="w-2/5 flex-shrink-0 relative h-20 flex items-center justify-center">
+                                                <img src="transporter.png" alt="Transporter" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] mix-blend-screen brightness-110">
+                                            </div>
+                                            <!-- Details -->
+                                            <div class="w-3/5 flex flex-col justify-center text-left">
+                                                <span class="block text-sm font-extrabold text-white mb-1.5 drop-shadow-md">VW Transporter</span>
+                                                <div class="grid grid-cols-2 gap-y-1 gap-x-1 text-[9px] text-slate-300 font-medium">
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💺</span> 6 Koltuk</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">🧳</span> Bagaj</div>
                                                     <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💳</span> Araçta Ödeme</div>
                                                     <div class="flex items-center gap-1 col-span-2"><span class="text-amber-500 text-[10px]">👨‍✈️</span> Profesyonel Sürücü</div>
                                                 </div>
@@ -469,9 +467,8 @@
                                             <div class="w-3/5 flex flex-col justify-center text-left">
                                                 <span class="block text-sm font-extrabold text-white mb-1.5 drop-shadow-md">Mercedes Sprinter</span>
                                                 <div class="grid grid-cols-2 gap-y-1 gap-x-1 text-[9px] text-slate-300 font-medium">
-                                                    <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">📶</span> Ücretsiz Wifi</div>
                                                     <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">💺</span> 15 Koltuk</div>
-                                                    <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">🧳</span> 15 Bagaj</div>
+                                                    <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">🧳</span> Bagaj</div>
                                                     <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">💳</span> Araçta Ödeme</div>
                                                     <div class="flex items-center gap-1 col-span-2"><span class="text-emerald-500 text-[10px]">👨‍✈️</span> Profesyonel Sürücü</div>
                                                 </div>
