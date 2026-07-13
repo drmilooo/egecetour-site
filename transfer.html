@@ -1648,32 +1648,29 @@
             let dateOutputLine = `📅 Planlanan Tarih & Saat: ${formattedDate}`;
 
             if (isAirportArrival) {
-                dateOutputLine = `📅 Transfer Zamanı: ${formattedDate}`;
                 tripDetailsMsg = 
-`🛫 Geliş Bilgileri:
-• Uçak İniş Zamanı: ${formatDateTime(flight_date + 'T' + flight_time + ':00')}
+`• Uçak İniş Zamanı: ${formatDateTime(flight_date + 'T' + flight_time + ':00')}
 • Uçuş Numarası: ${flight_no}
 • Bırakılacak Otel/Adres: ${address_details}`;
             } else if (isAirportDeparture) {
-                dateOutputLine = `📅 Transfer Zamanı: ${formattedDate}`;
                 tripDetailsMsg = 
-`🛫 Dönüş Bilgileri:
-• Uçak Kalkış Zamanı: ${formatDateTime(flight_date + 'T' + flight_time + ':00')}
+`• Uçak Kalkış Zamanı: ${formatDateTime(flight_date + 'T' + flight_time + ':00')}
 • Dönüş Uçuş Kodu: ${flight_no}
 • Alınacak Otel/Adres: ${address_details}`;
             } else {
                 tripDetailsMsg = 
-`📍 Adres Bilgisi:
-• Alınacak Otel/Adres: ${address_details}`;
+`• Alınacak Otel/Adres: ${address_details}`;
             }
 
             let passengerListMsg = '';
             if (otherNames.length > 0) {
                 passengerListMsg = `\n👥 Diğer Yolcular:\n` + otherNames.map((n, idx) => `• ${idx + 2}. Yolcu: ${n}`).join('\n');
+            } else {
+                passengerListMsg = `\n👥 Diğer Yolcular: Yok`;
             }
 
             const wpMessage = 
-`🚖 EGECE TRANSFER REZERVASYON TALEBİ
+`🚖 EGECETOUR REZERVASYON TALEBİ
 --------------------------------------------
 👤 İsim Soyisim: ${isim}
 📞 Telefon: ${telefon}
@@ -1684,10 +1681,11 @@
 ${dateOutputLine}
 💰 Ücret: ${calculatedPrice} €
 💳 Ödeme Türü: ${odeme_yontemi}
---------------------------------------------
+
 ${tripDetailsMsg}${passengerListMsg}
+
 --------------------------------------------
-📝 Özel Not: ${ozel_not || '-'}`;
+📝 Özel Not: ${ozel_not}`;
 
             showToast(TRANSLATIONS[currentLang]?.msg_telegram || "Telegram bildirimi gönderiliyor...", "info");
             await sendTelegramNotification(wpMessage);
