@@ -79,7 +79,6 @@
             padding-left: 52px !important;
         }
     </style>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col antialiased bg-slate-950" style="background-image: url('safari_bg.png'); background-attachment: fixed; background-size: cover; background-position: center; background-repeat: no-repeat;">
 
@@ -198,9 +197,6 @@
                             <!-- Loaded dynamically via JS -->
                         </div>
                     </div>
-
-                    <!-- reCAPTCHA Widget (Invisible) -->
-                    <div class="g-recaptcha" data-sitekey="6LfISlEtAAAAAFBqIRDocFNQppGm-2fq0uUhhVgI" data-size="invisible" data-callback="onRecaptchaSuccess"></div>
 
                     <!-- KVKK Consent Checkbox -->
                     <div class="space-y-2 pt-2">
@@ -594,8 +590,7 @@
                 modal_desc_2: "Lütfen aşağıdaki detayları doldurunuz",
                 section_tour_details: "Tur Planı Detayları",
                 lbl_pickup_hotel: "Alınacak Bölge & Otel:",
-                lbl_pickup_time: "Otelden Alınış Zamanı:",
-                msg_recaptcha: "Lütfen robot olmadığınızı doğrulayın."
+                lbl_pickup_time: "Otelden Alınış Zamanı:"
             },
             en: {
                 title: "Egece Transfer - Airport & Hotel VIP Transfer",
@@ -683,8 +678,7 @@
                 modal_desc_2: "Please fill in the details below",
                 section_tour_details: "Tour Plan Details",
                 lbl_pickup_hotel: "Pickup Region & Hotel:",
-                lbl_pickup_time: "Hotel Pickup Time:",
-                msg_recaptcha: "Please verify that you are not a robot."
+                lbl_pickup_time: "Hotel Pickup Time:"
             },
             ru: {
                 title: "Egece Transfer - VIP трансфер из аэропорта и в отель",
@@ -772,8 +766,7 @@
                 modal_desc_2: "Пожалуйста, заполните детали ниже",
                 section_tour_details: "Детали плана тура",
                 lbl_pickup_hotel: "Регион и отель для посадки:",
-                lbl_pickup_time: "Время посадки в отеле:",
-                msg_recaptcha: "Пожалуйста, подтвердите, что вы не робот."
+                lbl_pickup_time: "Время посадки в отеле:"
             },
             de: {
                 title: "Egece Transfer - Flughafen & Hotel VIP Transfer",
@@ -861,8 +854,7 @@
                 modal_desc_2: "Bitte füllen Sie die folgenden Details aus",
                 section_tour_details: "Details zum Tourplan",
                 lbl_pickup_hotel: "Abholregion & Hotel:",
-                lbl_pickup_time: "Abholzeit vom Hotel:",
-                msg_recaptcha: "Bitte bestätigen Sie, dass Sie kein Roboter sind."
+                lbl_pickup_time: "Abholzeit vom Hotel:"
             },
             pl: {
                 title: "Egece Transfer - VIP Transfer Lotniskowy i Hotelowy",
@@ -950,8 +942,7 @@
                 modal_desc_2: "Proszę wypełnić poniższe szczegóły",
                 section_tour_details: "Szczegóły Planu Wycieczki",
                 lbl_pickup_hotel: "Region i hotel odbioru:",
-                lbl_pickup_time: "Czas odbioru z hotelu:",
-                msg_recaptcha: "Proszę potwierdzić, że nie jesteś robotem."
+                lbl_pickup_time: "Czas odbioru z hotelu:"
             },
             kk: {
                 title: "Egece Transfer - Әуежай және Қонақ үй VIP трансфері",
@@ -1039,8 +1030,7 @@
                 modal_desc_2: "Төмендегі мәліметтерді толтырыңыз",
                 section_tour_details: "Тур жоспарының мәліметтері",
                 lbl_pickup_hotel: "Алынатын аймақ және қонақ үй:",
-                lbl_pickup_time: "Қонақ үйден алу уақыты:",
-                msg_recaptcha: "Робот емес екеніңізді растаңыз."
+                lbl_pickup_time: "Қонақ үйден алу уақыты:"
             }
         };
 
@@ -1478,20 +1468,6 @@
                 const trMsg = TRANSLATIONS[currentLang]?.msg_info_confirm || (currentLang === "tr" ? "Lütfen bilgilerin doğruluğunu onaylayın." : "Please confirm the accuracy of your information.");
                 showToast(trMsg, "error");
                 return;
-            }
-
-            // reCAPTCHA validation (Invisible)
-            if (typeof grecaptcha !== 'undefined') {
-                try {
-                    await new Promise((resolve) => {
-                        window.onRecaptchaSuccess = resolve;
-                        grecaptcha.execute();
-                    });
-                    grecaptcha.reset();
-                } catch (e) {
-                    console.error("reCAPTCHA error:", e);
-                    return;
-                }
             }
 
             if (phoneInputIti && !phoneInputIti.isValidNumber()) {

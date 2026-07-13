@@ -79,7 +79,6 @@
             padding-left: 52px !important;
         }
     </style>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col antialiased bg-slate-950" style="background-image: url('vito_bg.png'); background-attachment: fixed; background-size: cover; background-position: center; background-repeat: no-repeat;">
 
@@ -214,9 +213,6 @@
                             </label>
                         </div>
                     </div>
-
-                    <!-- reCAPTCHA Widget (Invisible) -->
-                    <div class="g-recaptcha" data-sitekey="6LfISlEtAAAAAFBqIRDocFNQppGm-2fq0uUhhVgI" data-size="invisible" data-callback="onRecaptchaSuccess"></div>
 
                     <!-- KVKK Consent Checkbox -->
                     <div class="space-y-2 pt-2">
@@ -683,8 +679,7 @@
                 vehicle_visual_notice: "* Araç fotoğrafları görsel amaçlıdır.",
                 label_baby_seat: "Bebek Koltuğu",
                 label_booster: "Yükseltici",
-                placeholder_special_note: "Varsa diğer özel istekleriniz...",
-                msg_recaptcha: "Lütfen robot olmadığınızı doğrulayın."
+                placeholder_special_note: "Varsa diğer özel istekleriniz..."
             },
             en: {
                 title: "Egece Transfer - Airport & Hotel VIP Transfer",
@@ -770,8 +765,7 @@
                 vehicle_visual_notice: "* Vehicle photos are for visual purposes only.",
                 label_baby_seat: "Baby Seat",
                 label_booster: "Booster Seat",
-                placeholder_special_note: "Any other special requests...",
-                msg_recaptcha: "Please verify that you are not a robot."
+                placeholder_special_note: "Any other special requests..."
             },
             ru: {
                 title: "Egece Transfer - VIP трансфер из аэропорта и в отель",
@@ -857,8 +851,7 @@
                 vehicle_visual_notice: "* Фотографии автомобилей представлены только для визуализации.",
                 label_baby_seat: "Детское кресло",
                 label_booster: "Бустер",
-                placeholder_special_note: "Любые другие особые пожелания...",
-                msg_recaptcha: "Пожалуйста, подтвердите, что вы не робот."
+                placeholder_special_note: "Любые другие особые пожелания..."
             },
             de: {
                 title: "Egece Transfer - Flughafen & Hotel VIP Transfer",
@@ -944,8 +937,7 @@
                 vehicle_visual_notice: "* Fahrzeugfotos dienen nur zu visuellen Zwecken.",
                 label_baby_seat: "Kindersitz",
                 label_booster: "Sitzerhöhung",
-                placeholder_special_note: "Weitere Sonderwünsche...",
-                msg_recaptcha: "Bitte bestätigen Sie, dass Sie kein Roboter sind."
+                placeholder_special_note: "Weitere Sonderwünsche..."
             },
             pl: {
                 title: "Egece Transfer - VIP Transfer Lotniskowy i Hotelowy",
@@ -1031,8 +1023,7 @@
                 vehicle_visual_notice: "* Zdjęcia pojazdów służą wyłącznie do celów wizualnych.",
                 label_baby_seat: "Fotelik dla dziecka",
                 label_booster: "Podstawka podwyższająca",
-                placeholder_special_note: "Wszelkie inne życzenia specjalne...",
-                msg_recaptcha: "Proszę potwierdzić, że nie jesteś robotem."
+                placeholder_special_note: "Wszelkie inne życzenia specjalne..."
             },
             kk: {
                 title: "Egece Transfer - Әуежай және Қонақ үй VIP трансфері",
@@ -1118,8 +1109,7 @@
                 vehicle_visual_notice: "* Көлік суреттері тек көрнекі мақсатта берілген.",
                 label_baby_seat: "Балалар орындығы",
                 label_booster: "Бустер",
-                placeholder_special_note: "Кез келген басқа арнайы сұраныстар...",
-                msg_recaptcha: "Робот емес екеніңізді растаңыз."
+                placeholder_special_note: "Кез келген басқа арнайы сұраныстар..."
             }
         };
 
@@ -1573,20 +1563,6 @@
                 const trMsg = TRANSLATIONS[currentLang]?.msg_info_confirm || (currentLang === "tr" ? "Lütfen bilgilerin doğruluğunu onaylayın." : "Please confirm the accuracy of your information.");
                 showToast(trMsg, "error");
                 return;
-            }
-
-            // reCAPTCHA validation (Invisible)
-            if (typeof grecaptcha !== 'undefined') {
-                try {
-                    await new Promise((resolve) => {
-                        window.onRecaptchaSuccess = resolve;
-                        grecaptcha.execute();
-                    });
-                    grecaptcha.reset();
-                } catch (e) {
-                    console.error("reCAPTCHA error:", e);
-                    return;
-                }
             }
 
             if (phoneInputIti && !phoneInputIti.isValidNumber()) {
