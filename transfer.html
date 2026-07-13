@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egecetour - Antalya Tour, Kemer Tour & VIP Transfer</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Egecetour ile lüks ve güvenli VIP transfer hizmeti. Antalya Havalimanı otel transferleri. Online kredi kartı gerektirmeden araçta ödeme yapın.">
+    <meta name="keywords" content="antalya tour, antalya transfer, egecetour, kemer tour, antalya vip transfer, antalya havalimanı transfer, antalya havalimanı kemer transfer, kemer vip transfer, çamyuva vip transfer, beldibi vip transfer, göynük vip transfer, antalya lüks transfer, ön ödemesiz antalya transfer, araçta ödeme kemer transfer, kredi kartsız antalya transfer, antalya vip vito transfer">
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            900: '#11131c',
+                            950: '#0b0c10',
+                            800: '#1e202e',
+                            850: '#161925',
+                            700: '#2d3142'
+                        },
+                        amber: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Supabase JS Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- intl-tel-input CSS & JS (Offline Local) -->
+    <link rel="stylesheet" href="intlTelInput.css?v=3.0">
+    <script src="intlTelInput.js?v=3.0"></script>
+    <style>
+        /* intl-tel-input dark mode custom styling */
+        .iti { width: 100%; }
+        .iti__country-list {
+            background-color: #11131c !important;
+            border: 1px solid #1e202e !important;
+            color: #f1f5f9 !important;
+            max-height: 200px;
+            z-index: 100;
+        }
+        .iti__country:hover, .iti__country.iti__highlight {
+            background-color: #1e202e !important;
+        }
+        .iti__selected-dial-code {
+            color: #f1f5f9 !important;
+            font-size: 14px;
+        }
+        .iti input {
+            padding-left: 52px !important;
+        }
+    </style>
+</head>
+<body class="text-slate-100 font-sans min-h-screen flex flex-col antialiased bg-slate-950" style="background-image: url('vito_bg.png'); background-attachment: fixed; background-size: cover; background-position: center; background-repeat: no-repeat;">
+
+    <!-- Error Debug Banner -->
+    <div id="errorBanner" class="hidden fixed top-0 left-0 right-0 z-[10000] bg-rose-600 text-white p-4 font-mono text-xs break-all shadow-lg"></div>
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const banner = document.getElementById("errorBanner");
+            if (banner) {
+                banner.classList.remove("hidden");
+                const newErr = document.createElement("div");
+                newErr.className = "border-b border-rose-500/30 pb-2 mb-2 last:mb-0 last:border-b-0";
+                newErr.innerHTML = `<strong>⚠️ TARAYICI HATASI DETAYI:</strong><br>
+                                    Mesaj: ${message}<br>
+                                    Dosya: ${source}<br>
+                                    Satır: ${lineno} | Sütun: ${colno}`;
+                banner.appendChild(newErr);
+            }
+            return false;
+        };
+    </script>
+
+    <!-- LANGUAGE SELECTOR MODAL -->
+    <div id="langModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-md transition-all duration-300">
+        <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-3xl shadow-2xl max-w-md w-full mx-4 relative overflow-hidden text-center">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500"></div>
+            <h2 id="modal_title_lang" data-translate="modal_title_lang" class="text-xl sm:text-2xl font-extrabold text-white mb-2">Lütfen Dil Seçiniz</h2>
+            <p id="modal_desc_lang" data-translate="modal_desc_lang" class="text-xs text-slate-400 mb-6">Please select your language / Пожалуйста, выберите язык</p>
+            <div class="grid grid-cols-2 gap-3.5">
+                <button onclick="selectLanguage('tr')" class="flex items-center space-x-3 p-3 bg-slate-950 border border-slate-800 hover:border-amber-500/50 rounded-xl transition-all text-left">
+                    <img src="https://flagcdn.com/w40/tr.png" width="30" alt="Türkçe" class="rounded-sm">
+                    <span class="text-xs sm:text-sm font-semibold text-white">Türkçe</span>
+                </button>
+                <button onclick="selectLanguage('en')" class="flex items-center space-x-3 p-3 bg-slate-950 border border-slate-800 hover:border-amber-500/50 rounded-xl transition-all text-left">
+                    <img src="https://flagcdn.com/w40/gb.png" width="30" alt="English" class="rounded-sm">
+                    <span class="text-xs sm:text-sm font-semibold text-white">English</span>
+                </button>
+                <button onclick="selectLanguage('ru')" class="flex items-center space-x-3 p-3 bg-slate-950 border border-slate-800 hover:border-amber-500/50 rounded-xl transition-all text-left">
+                    <img src="https://flagcdn.com/w40/ru.png" width="30" alt="Русский" class="rounded-sm">
+                    <span class="text-xs sm:text-sm font-semibold text-white">Русский</span>
+                </button>
+                <button onclick="selectLanguage('de')" class="flex items-center space-x-3 p-3 bg-slate-950 border border-slate-800 hover:border-amber-500/50 rounded-xl transition-all text-left">
+                    <img src="https://flagcdn.com/w40/de.png" width="30" alt="Deutsch" class="rounded-sm">
+                    <span class="text-xs sm:text-sm font-semibold text-white">Deutsch</span>
+                </button>
+                <button onclick="selectLanguage('pl')" class="flex items-center space-x-3 p-3 bg-slate-950 border border-slate-800 hover:border-amber-500/50 rounded-xl transition-all text-left">
+                    <img src="https://flagcdn.com/w40/pl.png" width="30" alt="Polski" class="rounded-sm">
+                    <span class="text-xs sm:text-sm font-semibold text-white">Polski</span>
+                </button>
+                <button onclick="selectLanguage('kk')" class="flex items-center space-x-3 p-3 bg-slate-950 border border-slate-800 hover:border-amber-500/50 rounded-xl transition-all text-left">
+                    <img src="https://flagcdn.com/w40/kz.png" width="30" alt="Қазақша" class="rounded-sm">
+                    <span class="text-xs sm:text-sm font-semibold text-white">Қазақша</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOKING DETAILS MODAL -->
+    <div id="bookingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none" style="display: none;">
+        <div class="bg-slate-900 border border-amber-500/30 p-5 sm:p-6 rounded-3xl shadow-2xl max-w-lg w-full mx-4 relative overflow-y-auto max-h-[90vh]">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500"></div>
+            <!-- Close Button -->
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-all text-sm font-bold">✕</button>
+            
+            <div id="modalFormBody">
+                <!-- Step Indicator (Step 2 Active) -->
+                <div class="flex items-center justify-between max-w-xs mx-auto mb-6 mt-1">
+                    <div class="flex flex-col items-center">
+                        <div class="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/50 text-amber-500 font-bold text-[10px] flex items-center justify-center">✓</div>
+                        <span class="text-[8px] text-amber-500/70 font-bold mt-1 uppercase tracking-wider" data-translate="step_1">Hızlı Plan</span>
+                    </div>
+                    <div class="flex-grow h-0.5 bg-amber-500/30 mx-2 -mt-4"></div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 font-bold text-[10px] flex items-center justify-center shadow-md shadow-amber-500/20">2</div>
+                        <span class="text-[8px] text-amber-500 font-bold mt-1 uppercase tracking-wider" data-translate="step_2">Detaylar</span>
+                    </div>
+                    <div class="flex-grow h-0.5 bg-slate-800 mx-2 -mt-4"></div>
+                    <div class="flex flex-col items-center opacity-40">
+                        <div class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px] flex items-center justify-center">3</div>
+                        <span class="text-[8px] text-slate-400 font-bold mt-1 uppercase tracking-wider" data-translate="step_3">İletişim</span>
+                    </div>
+                </div>
+
+                <div class="text-center mb-5">
+                    <h3 id="modal-title" class="text-lg font-bold text-white">Rezervasyonu Tamamla</h3>
+                    <p id="modal-desc" class="text-xs text-slate-400 mt-1">Lütfen aşağıdaki detayları doldurunuz</p>
+                </div>
+
+                <div class="space-y-4 text-left">
+                    <!-- Yolcu Bilgileri -->
+                    <div class="border-b border-slate-800/80 pb-4">
+                        <span id="lbl_passenger_1" data-translate="label_passenger_1" class="block text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">1. Yolcu Bilgileri</span>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="isim" id="lbl_name_modal" data-translate="label_name" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Adınız Soyadınız</label>
+                                <input type="text" id="isim" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                            </div>
+                            <div class="grid grid-cols-1 gap-3">
+                                <div>
+                                    <label for="telefon" id="lbl_phone_modal" data-translate="label_phone" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Telefon Numarası</label>
+                                    <input type="tel" id="telefon" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Fields Area -->
+                    <div id="dynamicFieldsContainer" class="border-b border-slate-800/80 pb-4">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+
+                    <!-- Yolcu İsimleri -->
+                    <div id="otherPassengersContainer" class="border-b border-slate-800/80 pb-4 hidden">
+                        <span id="lbl_passenger_other" data-translate="label_passenger_other" class="block text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">Yolcu İsimleri</span>
+                        <div id="otherPassengersInputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Loaded dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Özel Notunuz -->
+                    <div>
+                        <label for="ozel_not" id="lbl_special_note" data-translate="label_special_note" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Özel Notunuz</label>
+                        <textarea id="ozel_not" rows="2" class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs resize-none" placeholder="Varsa özel istekleriniz, bebek koltuğu talebi vb."></textarea>
+                    </div>
+
+                    <!-- KVKK Consent Checkbox -->
+                    <div class="space-y-2 pt-2">
+                        <div class="flex items-start space-x-2.5">
+                            <input type="checkbox" id="kvkk_consent" required class="mt-1 h-3.5 w-3.5 rounded border-slate-800 bg-slate-950 text-amber-500 focus:ring-amber-500/30 accent-amber-500 cursor-pointer">
+                            <label for="kvkk_consent" id="lbl_kvkk" data-translate="label_kvkk" class="text-[10px] text-slate-400 leading-snug cursor-pointer select-none">
+                                Kişisel verilerimin KVKK kapsamında işlenmesini ve transfer şartlarını kabul ediyorum.
+                            </label>
+                        </div>
+                        <div class="flex items-start space-x-2.5">
+                            <input type="checkbox" id="info_confirm" required class="mt-1 h-3.5 w-3.5 rounded border-slate-800 bg-slate-950 text-emerald-500 focus:ring-emerald-500/30 accent-emerald-500 cursor-pointer">
+                            <label for="info_confirm" id="lbl_info_confirm" data-translate="label_info_confirm" class="text-[10px] text-emerald-400/90 font-bold leading-snug cursor-pointer select-none">
+                                Girdiğim bilgilerin (Tarih, Saat, Telefon vb.) doğru olduğunu onaylıyorum.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Button -->
+                    <button onclick="submitReservation()" id="submitBtn" class="w-full mt-2 inline-flex items-center justify-center px-4 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shadow-md transition-all focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        <svg id="btnSpinner" class="animate-spin -ml-1 mr-2 h-4 w-4 text-slate-950 hidden" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span id="btnText" data-translate="btn_book" class="text-xs sm:text-sm uppercase tracking-wider font-bold">Rezervasyon Yap</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3 Success/Redirect Body -->
+            <div id="modalSuccessBody" class="hidden text-center py-6 space-y-4">
+                <!-- Step Indicator (Step 3 Active) -->
+                <div class="flex items-center justify-between max-w-xs mx-auto mb-6 mt-1">
+                    <div class="flex flex-col items-center">
+                        <div class="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500 text-emerald-400 font-bold text-[10px] flex items-center justify-center">✓</div>
+                        <span class="text-[8px] text-emerald-500/70 font-bold mt-1 uppercase tracking-wider">Hızlı Plan</span>
+                    </div>
+                    <div class="flex-grow h-0.5 bg-emerald-500/40 mx-2 -mt-4"></div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500 text-emerald-400 font-bold text-[10px] flex items-center justify-center">✓</div>
+                        <span class="text-[8px] text-emerald-500/70 font-bold mt-1 uppercase tracking-wider">Detaylar</span>
+                    </div>
+                    <div class="flex-grow h-0.5 bg-emerald-500/40 mx-2 -mt-4"></div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 font-bold text-[10px] flex items-center justify-center shadow-md shadow-emerald-500/20">3</div>
+                        <span class="text-[8px] text-emerald-500 font-bold mt-1 uppercase tracking-wider">İletişim</span>
+                    </div>
+                </div>
+                <div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-3xl animate-bounce">
+                    🚖
+                </div>
+                <h3 id="success-title" class="text-lg font-bold text-white">Rezervasyonunuz Alındı!</h3>
+                <p id="success-desc" class="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">Talebiniz başarıyla alınmıştır. Şoförümüz en kısa sürede sizinle iletişime geçecektir.</p>
+                <button onclick="closeBookingModal()" id="btn_close_modal" data-translate="btn_close" class="w-full mt-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-sm transition-all uppercase tracking-wider">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER (Sidebar + Content) -->
+    <div class="flex flex-col md:flex-row min-h-screen w-full">
+
+        <!-- FIXED LANGUAGE SELECTOR -->
+        <div class="fixed top-4 left-4 z-50 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-xl flex gap-1.5">
+            <button onclick="changeLanguage('tr')" title="Türkçe" class="flex items-center justify-center p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-lg transition-all text-lg"><img src="https://flagcdn.com/w20/tr.png" width="20" alt="TR" class="rounded-[2px]"></button>
+            <button onclick="changeLanguage('en')" title="English" class="flex items-center justify-center p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-lg transition-all text-lg"><img src="https://flagcdn.com/w20/gb.png" width="20" alt="EN" class="rounded-[2px]"></button>
+            <button onclick="changeLanguage('ru')" title="Русский" class="flex items-center justify-center p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-lg transition-all text-lg"><img src="https://flagcdn.com/w20/ru.png" width="20" alt="RU" class="rounded-[2px]"></button>
+            <button onclick="changeLanguage('de')" title="Deutsch" class="flex items-center justify-center p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-lg transition-all text-lg"><img src="https://flagcdn.com/w20/de.png" width="20" alt="DE" class="rounded-[2px]"></button>
+            <button onclick="changeLanguage('pl')" title="Polski" class="flex items-center justify-center p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-lg transition-all text-lg"><img src="https://flagcdn.com/w20/pl.png" width="20" alt="PL" class="rounded-[2px]"></button>
+            <button onclick="changeLanguage('kk')" title="Қазақша" class="flex items-center justify-center p-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 rounded-lg transition-all text-lg"><img src="https://flagcdn.com/w20/kz.png" width="20" alt="KZ" class="rounded-[2px]"></button>
+        </div>
+
+        <!-- RIGHT CONTENT AREA -->
+        <main class="flex-grow flex flex-col p-4 sm:p-6 lg:p-8 space-y-6">
+
+            <!-- Hero Mod Header (Simple & Bold) -->
+            <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="space-y-2">
+                    <div id="hero-badge" data-translate="hero_badge" class="inline-flex items-center px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-bold uppercase tracking-wider">
+                        Antalya Havalimanı (AYT) VIP Ulaşım
+                    </div>
+                    <h1 id="hero-title" data-translate="hero_title" class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                        Egece Transfer <br> <span class="text-amber-500">VIP Transfer Hizmetleri</span>
+                </div>
+            </div>
+
+            <!-- Center Column: Simple Route Selector Card -->
+            <div class="flex justify-center items-center py-4 w-full">
+                <div id="bookingFormCard" class="max-w-xl w-full bg-slate-950/60 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl">
+                    <!-- Step Indicator (Step 1 Active) -->
+                    <div class="flex items-center justify-between max-w-xs mx-auto mb-6 mt-1">
+                        <div class="flex flex-col items-center">
+                            <div class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 font-bold text-[10px] flex items-center justify-center shadow-md shadow-amber-500/20">1</div>
+                            <span class="text-[8px] text-amber-500 font-bold mt-1 uppercase tracking-wider" data-translate="step_1">Hızlı Plan</span>
+                        </div>
+                        <div class="flex-grow h-0.5 bg-slate-800 mx-2 -mt-4"></div>
+                        <div class="flex flex-col items-center opacity-40">
+                            <div class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px] flex items-center justify-center">2</div>
+                            <span class="text-[8px] text-slate-400 font-bold mt-1 uppercase tracking-wider" data-translate="step_2">Detaylar</span>
+                        </div>
+                        <div class="flex-grow h-0.5 bg-slate-800 mx-2 -mt-4"></div>
+                        <div class="flex flex-col items-center opacity-40">
+                            <div class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px] flex items-center justify-center">3</div>
+                            <span class="text-[8px] text-slate-400 font-bold mt-1 uppercase tracking-wider" data-translate="step_3">İletişim</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-5 text-center">
+                        <h2 id="form-title" data-translate="form_title" class="text-lg font-bold text-white">Hızlı Yolculuk Planı</h2>
+                        <p id="form-desc" data-translate="form_desc" class="text-xs text-slate-400 mt-1">Lütfen transfer detaylarınızı seçiniz</p>
+                    </div>
+
+                        <div class="space-y-4">
+                            <!-- Nereden -->
+                            <div class="relative">
+                                <label for="nereden" id="label-from" data-translate="label_from" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Alış Noktası (Nereden)</label>
+                                <span class="absolute left-3 top-[34px] text-amber-500 text-sm">📍</span>
+                                <select id="nereden" class="w-full pl-8 pr-8 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Nereden?</option>
+                                    <option value="Antalya Havalimanı (AYT)">Antalya Havalimanı (AYT)</option>
+                                    <option value="Kemer">Kemer</option>
+                                    <option value="Beldibi">Beldibi</option>
+                                    <option value="Göynük">Göynük</option>
+                                    <option value="Kiriş">Kiriş</option>
+                                    <option value="Çamyuva">Çamyuva</option>
+                                    <option value="Tekirova">Tekirova</option>
+                                </select>
+                                <span class="absolute right-3 top-[34px] text-slate-500 pointer-events-none text-[9px]">▼</span>
+                            </div>
+
+                            <!-- Nereye -->
+                            <div class="relative">
+                                <label for="nereye" id="label-to" data-translate="label_to" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Varış Noktası (Nereye)</label>
+                                <span class="absolute left-3 top-[34px] text-amber-500 text-sm">📍</span>
+                                <select id="nereye" class="w-full pl-8 pr-8 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Nereye?</option>
+                                    <option value="Antalya Havalimanı (AYT)">Antalya Havalimanı (AYT)</option>
+                                    <option value="Kemer">Kemer</option>
+                                    <option value="Beldibi">Beldibi</option>
+                                    <option value="Göynük">Göynük</option>
+                                    <option value="Kiriş">Kiriş</option>
+                                    <option value="Çamyuva">Çamyuva</option>
+                                    <option value="Tekirova">Tekirova</option>
+                                </select>
+                                <span class="absolute right-3 top-[34px] text-slate-500 pointer-events-none text-[9px]">▼</span>
+                            </div>
+
+                            <!-- Yolcular Field -->
+                            <div>
+                                <label id="label_passengers" data-translate="quick_passengers" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Yolcular</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="relative">
+                                        <label class="block text-[8px] text-slate-500 uppercase font-bold absolute -top-2 left-2 bg-slate-950 px-1" data-translate="label_adult">Yetişkin</label>
+                                        <select id="yetiskin_sayisi" onchange="validatePassengerCount(this)" data-last-val="1" class="block w-full px-2 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                        </select>
+                                    </div>
+                                    <div class="relative">
+                                        <label class="block text-[8px] text-slate-500 uppercase font-bold absolute -top-2 left-2 bg-slate-950 px-1" data-translate="label_child">Çocuk</label>
+                                        <select id="cocuk_sayisi" onchange="validatePassengerCount(this)" data-last-val="0" class="block w-full px-2 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                        </select>
+                                    </div>
+                                    <div class="relative">
+                                        <label class="block text-[8px] text-slate-500 uppercase font-bold absolute -top-2 left-2 bg-slate-950 px-1" data-translate="label_baby">Bebek</label>
+                                        <select id="bebek_sayisi" onchange="validatePassengerCount(this)" data-last-val="0" class="block w-full px-2 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Araç Seçimi Field -->
+                            <div class="mt-4">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2" data-translate="label_vehicle">Araç Seçimi</label>
+                                <div class="grid grid-cols-1 gap-3" id="vehicle_selection_container">
+                                    <!-- Transporter -->
+                                    <label class="cursor-pointer relative block">
+                                        <input type="radio" name="arac_secimi" value="VW Transporter" class="peer sr-only" checked>
+                                        <div class="rounded-xl border border-slate-800 bg-slate-950/50 backdrop-blur-sm p-3 flex items-center peer-checked:border-amber-500 peer-checked:bg-slate-900/60 peer-checked:backdrop-blur-md transition-all hover:border-slate-600 gap-4 overflow-hidden relative">
+                                            <div class="absolute top-0 left-0 bg-amber-500 text-slate-950 text-[9px] font-extrabold px-2 py-0.5 rounded-br-lg uppercase tracking-wider z-10 shadow-md">VIP</div>
+                                            <!-- Image -->
+                                            <div class="w-2/5 flex-shrink-0 relative h-20 flex items-center justify-center">
+                                                <img src="transporter.png" alt="Transporter" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] mix-blend-screen brightness-110">
+                                            </div>
+                                            <!-- Details -->
+                                            <div class="w-3/5 flex flex-col justify-center text-left">
+                                                <span class="block text-sm font-extrabold text-white mb-1.5 drop-shadow-md">VW Transporter</span>
+                                                <div class="grid grid-cols-2 gap-y-1 gap-x-1 text-[9px] text-slate-300 font-medium">
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">📶</span> Ücretsiz Wifi</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💺</span> 6 Koltuk</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">🧳</span> 6 Bagaj</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💳</span> Araçta Ödeme</div>
+                                                    <div class="flex items-center gap-1 col-span-2"><span class="text-amber-500 text-[10px]">👨‍✈️</span> Profesyonel Sürücü</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <!-- Vito -->
+                                    <label class="cursor-pointer relative block">
+                                        <input type="radio" name="arac_secimi" value="Mercedes Vito VIP" class="peer sr-only">
+                                        <div class="rounded-xl border border-slate-800 bg-slate-950/50 backdrop-blur-sm p-3 flex items-center peer-checked:border-amber-500 peer-checked:bg-slate-900/60 peer-checked:backdrop-blur-md transition-all hover:border-slate-600 gap-4 overflow-hidden relative">
+                                            <div class="absolute top-0 left-0 bg-amber-500 text-slate-950 text-[9px] font-extrabold px-2 py-0.5 rounded-br-lg uppercase tracking-wider z-10 shadow-md">VIP</div>
+                                            <!-- Image -->
+                                            <div class="w-2/5 flex-shrink-0 relative h-20 flex items-center justify-center">
+                                                <img src="vito.png" alt="Vito" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] mix-blend-screen brightness-110">
+                                            </div>
+                                            <!-- Details -->
+                                            <div class="w-3/5 flex flex-col justify-center text-left">
+                                                <span class="block text-sm font-extrabold text-white mb-1.5 drop-shadow-md">Mercedes Vito</span>
+                                                <div class="grid grid-cols-2 gap-y-1 gap-x-1 text-[9px] text-slate-300 font-medium">
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">📶</span> Ücretsiz Wifi</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💺</span> 6 Koltuk</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">🧳</span> 6 Bagaj</div>
+                                                    <div class="flex items-center gap-1"><span class="text-amber-500 text-[10px]">💳</span> Araçta Ödeme</div>
+                                                    <div class="flex items-center gap-1 col-span-2"><span class="text-amber-500 text-[10px]">👨‍✈️</span> Profesyonel Sürücü</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <!-- Sprinter -->
+                                    <label class="cursor-pointer relative block" id="label_sprinter">
+                                        <input type="radio" name="arac_secimi" id="radio_sprinter" value="Mercedes Sprinter" class="peer sr-only">
+                                        <div class="rounded-xl border border-slate-800 bg-slate-950/50 backdrop-blur-sm p-3 flex items-center peer-checked:border-emerald-500 peer-checked:bg-slate-900/60 peer-checked:backdrop-blur-md transition-all hover:border-slate-600 gap-4 overflow-hidden relative">
+                                            <div class="absolute top-0 left-0 bg-emerald-500 text-slate-950 text-[9px] font-extrabold px-2 py-0.5 rounded-br-lg uppercase tracking-wider z-10 shadow-md">VIP</div>
+                                            <div id="sprinter_badge" class="hidden absolute top-0 right-0 bg-emerald-500 text-slate-950 text-[7px] font-extrabold px-1.5 py-0.5 rounded-bl-lg uppercase tracking-wider shadow-md" data-translate="label_recommended">Önerilen</div>
+                                            <!-- Image -->
+                                            <div class="w-2/5 flex-shrink-0 relative h-20 flex items-center justify-center">
+                                                <img src="sprinter.png" alt="Sprinter" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] mix-blend-screen brightness-110">
+                                            </div>
+                                            <!-- Details -->
+                                            <div class="w-3/5 flex flex-col justify-center text-left">
+                                                <span class="block text-sm font-extrabold text-white mb-1.5 drop-shadow-md">Mercedes Sprinter</span>
+                                                <div class="grid grid-cols-2 gap-y-1 gap-x-1 text-[9px] text-slate-300 font-medium">
+                                                    <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">📶</span> Ücretsiz Wifi</div>
+                                                    <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">💺</span> 15 Koltuk</div>
+                                                    <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">🧳</span> 15 Bagaj</div>
+                                                    <div class="flex items-center gap-1"><span class="text-emerald-500 text-[10px]">💳</span> Araçta Ödeme</div>
+                                                    <div class="flex items-center gap-1 col-span-2"><span class="text-emerald-500 text-[10px]">👨‍✈️</span> Profesyonel Sürücü</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <p class="text-[9px] text-slate-500 mt-2 text-center italic" data-translate="vehicle_visual_notice">* Araç fotoğrafları görsel amaçlıdır.</p>
+                            </div>
+
+                            <!-- Date & Time picker section in card (Hidden automatically for Airport Transfers) -->
+                            <div id="cardDateTimeSection" class="space-y-4">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label for="transfer_tarih" id="label-date" data-translate="label_date" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Transfer Tarihi</label>
+                                        <input type="text" id="transfer_tarih" data-placeholder="placeholder_date" required onfocus="(this.type='date')" onblur="if(!this.value) this.type='text'"
+                                            class="block w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm">
+                                    </div>
+                                    <div>
+                                        <label for="transfer_saat" id="label-time" data-translate="label_time" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Transfer Saati</label>
+                                        <input type="time" id="transfer_saat" required
+                                            class="block w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Price Display -->
+                            <div id="priceDisplayContainer" class="hidden bg-slate-950/60 border border-amber-500/20 rounded-xl p-3.5 text-center my-3 transition-all duration-300">
+                                <span id="priceLabel" data-translate="price_label" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Tahmini Transfer Ücreti</span>
+                                <span id="priceValue" class="text-2xl font-extrabold text-amber-500 mt-1 block">0 €</span>
+                            </div>
+
+                            <!-- Next Step Button -->
+                            <button type="button" onclick="openBookingModal()"
+                                class="w-full mt-2.5 inline-flex items-center justify-center px-4 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shadow-md transition-all focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs sm:text-sm uppercase tracking-wider font-bold">
+                                <span data-translate="btn_book">Rezervasyon Yap</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="border-t border-slate-900 py-6 text-center text-[11px] text-slate-500">
+                <div class="space-y-3">
+                    <p id="footer-desc" data-translate="footer_desc">Egece Transfer - Havalimanı Transfer Hizmetleri</p>
+                    <div class="flex justify-center items-center space-x-3 md:hidden">
+                        <a href="admin.html" target="_blank" class="text-slate-400 hover:text-amber-500 transition-all">Yönetim Paneli Girişi</a>
+                    </div>
+                    <p class="text-slate-600 text-xs uppercase tracking-widest font-semibold">© 2026 Egecetour. Tüm Hakları Saklıdır.</p>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Inline Booking Logic -->
+    <script>
+        const SUPABASE_URL = "https://YOUR_SUPABASE_PROJECT_URL.supabase.co";
+        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+        const WHATSAPP_NUMBER = "905326908396";
+        const TELEGRAM_BOT_TOKEN = "8668497531:AAFPaW0637kX93PgSyQBk9YwG9Z9jmivqnM";
+        const TELEGRAM_CHAT_ID = "-5538504683";
+
+        let currentLang = "tr";
+        let phoneInputIti = null;
+        let supabaseClient = null;
+
+        // Initialize Supabase if credentials are provided
+        try {
+            if (SUPABASE_URL && SUPABASE_URL !== "https://YOUR_SUPABASE_PROJECT_URL.supabase.co" && SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY") {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        } catch (error) {
+            console.error("Supabase client init failed:", error);
+        }
+
+        const HOTELS_DB = {
+            "Kemer": [
+                "Maxx Royal Kemer Resort", "NG Phaselis Bay", "Fame Residence Kemer", "Crystal De Luxe Resort & Spa", "DoubleTree by Hilton Antalya-Kemer", "Limak Limra Hotel & Resort", "Orange County Kemer", "Armas Beach Hotel", "L'Oceanica Beach Resort", "Meder Resort Hotel", "Kemer Barut Collection", "Rox Royal Hotel", "Kemer Holiday Club", "Asdem Park Hotel", "Golden Lotus Hotel", "Ambassador Plaza Hotel", "Viking Nona Beach", "Viking Star Hotel", "Viking Apart Hotel", "Ares Hotel", "Melissa Residence Hotel", "Kemer Dream Hotel", "Felice Hotel", "Kaliptus Hotel", "Idyros Hotel", "Mr. Crane Hotel", "Elegance Hotel Kemer", "Romeo Beach Hotel", "Kemer Botanik Resort Hotel", "The Nordic Hotel", "Ezel Hotel", "Kara Family Apart", "Olympos Pension", "Kemer Star Hotel", "Kemer Port Hotel", "Nar Hotel", "Naturella Hotel", "Ozkaymak Marina Hotel"
+            ],
+            "Beldibi": [
+                "Rixos Sungate", "Nirvana Mediterranean Excellence", "Amara Premier Palace", "Corendon Playa Kemer", "Grand Ring Hotel", "Paloma Foresta", "Club Salima", "Selçukhan Hotel", "Baia Kemer Club", "Akka Antedon Hotel", "Onkel Resort Hotel", "Seagull Hotel", "Rama Beach Hotel", "Sunland Resort", "Carelta Beach Resort", "Imperial Sunland Resort", "Belpoint Beach Hotel", "Get Enjoy Hotel", "Beldibi Beach Hotel", "More Hotel", "Venus Hotel", "Club Hotel Beldibi", "Rios Beach Hotel", "Larissa Mare Beach", "Endam Hotel", "Himeros Beach Hotel", "Matiate Hotel", "Beldibi Santana Hotel", "Tal Beach Hotel", "Magic Sun Hotel"
+            ],
+            "Göynük": [
+                "Mirage Park Resort", "Kimeros Park Holiday Village", "Sherwood Exclusive Kemer", "Transatlantik Hotel & Spa", "Ulusoy Kemer Holiday Club", "Kilikya Palace Göynük", "Mirada Del Mar", "Seven Seas Hotel Life", "Eldar Resort Hotel", "Karmir Resort & Spa", "Queen's Park Göynük", "Fame Residence Göynük", "Majesty Club La Mer", "Woodline Hotel", "Batont Garden Resort", "Kemer Botanik Resort", "Avantgarde Hotel & Resort", "Queen Elizabeth Elite Suite", "L'Ancora Beach Hotel", "Göynük Pension", "Beydağları Pension", "Kemer Manastir Hotel", "Otium Hotel Life", "Kilikya Resort Göynük", "Dosinia Luxury Resort", "Ma Biche Hotel"
+            ],
+            "Kiriş": [
+                "Maxx Royal Kemer Resort", "Limak Limra Hotel & Resort", "Alva Donna World Palace", "Akka Alinda Hotel", "Daima Biz Hotel", "Sailor's Beach Club", "PGS Kiris Resort", "Queen's Park Le Jardin", "Viking Star Hotel", "Grand Mir'Amor Hotel", "Daima Resort", "Blue Sky Hotel", "Anita Kemer Club", "Seker Resort Hotel", "Larissa Blue Hotel", "Solim Hotel", "Kiriş Resort", "Kiriş Garden Hotel", "Kiriş Apart", "Le Jardin Resort", "Camyuva Beach Hotel (Kiriş Area)", "Simena Sun Club", "Ares Blue Hotel"
+            ],
+            "Çamyuva": [
+                "Zena Resort Hotel", "L'Oceanica Beach Resort", "Pine House Hotel", "Armas Labada", "Simena Hotel", "Pashas Princess Hotel", "Lucida Beach Hotel", "Kilikya Resort Çamyuva", "Asteria Kemer Resort", "Elize Beach Resort", "Fantasia Hotel De Luxe", "Stella Hotel", "Sun Club", "Etenna Beach Club", "Çamyuva Beach Hotel", "Sinatra Hotel", "Asdem Beach Hotel", "White Lilyum Hotel", "Iko Melisa Garden", "Naturella Apart Hotel", "Mom's Hotel", "Çamyuva Motel", "Club Marco Polo", "Naturland Eco Park", "Camyuva Apart"
+            ],
+            "Tekirova": [
+                "Rixos Premium Tekirova", "Nirvana Dolce Vita", "Gural Premier Tekirova", "Amara Dolce Vita Luxury", "Marti Myra", "Club Hotel Phaselis Rose", "Euphoria Hotel Tekirova", "Pirate's Beach Club", "Queen's Park Tekirova", "Phaselis Princess", "Kaplan Paradise", "Sirius Hotel", "Tekirova Corinthia", "Festival Tekirova", "Royal Diwa Tekirova", "Zen Phaselis Princess", "Ekinci Palace", "Tekirova Pansiyon", "Teos Hotel Tekirova", "Amore Hotel Tekirova", "Gulliver's Resort", "Larissa Phaselis Princess"
+            ]
+        };
+
+        const TRANSLATIONS = {
+            tr: {
+                title: "Egece Transfer - Havalimanı & Otel VIP Transfer",
+                hero_badge: "Antalya Havalimanı (AYT) VIP Ulaşım",
+                hero_title: "Egece Transfer <br> <span class=\"text-amber-500\">VIP Transfer Hizmetleri</span>",
+                hero_desc: "Antalya Havalimanı'nden Belek, Kemer, Side, Alanya ve tüm tatil merkezlerine lüks Mercedes Vito VIP araçlarımızla 7/24 konforlu ulaşım. Kredi kartı bilgisi gerekmez, ödemenizi araçta yapın.",
+                form_title: "Hızlı Yolculuk Planı",
+                form_desc: "Lütfen transfer detaylarınızı seçiniz",
+                label_name: "Adınız Soyadınız",
+                label_phone: "Telefon Numarası",
+                label_from: "Alış Noktası (Nereden)",
+                label_to: "Varış Noktası (Nereye)",
+                label_date: "Transfer Tarihi",
+                label_time: "Transfer Saati",
+                label_payment: "Ödeme Yöntemi",
+                payment_cash: "Araçta Nakit/POS",
+                payment_cash_desc: "Kart veya Nakit ödeme",
+                payment_transfer: "Havale / EFT",
+                payment_transfer_desc: "Banka havalesi ile",
+                btn_book: "Rezervasyon Yap",
+                opt_airport: "Antalya Havalimanı (AYT)",
+                badge_karşılama: "7/24 Canlı Karşılama",
+                badge_karşılama_desc: "Antalya Havalimanı'nda uçuş gecikmelerini takip ediyor, uçağınız indiğinde sizi isminizle kapıda karşılıyoruz.",
+                badge_ödeme: "Araçta Güvenle Öde",
+                badge_ödeme_desc: "Rezervasyonunuzu oluştururken kredi kartı bilgisi vermeyin. Ücreti yolculuk anında araçta ödeyin.",
+                badge_konfor: "VIP Vito Konforu",
+                badge_konfor_desc: "Geniş bagaj hacmi, klima, lüks deri koltuklar ve profesyonel şoförlerimizle konforlu seyahat.",
+                footer_desc: "Egece Transfer - Havalimanı Transfer Hizmetleri",
+                footer_copy: "© 2026 Egece Transfer. Tüm hakları saklıdır.",
+                msg_required: "Lütfen tüm alanları eksiksiz doldurun.",
+                msg_invalid_phone: "Lütfen geçerli bir telefon numarası girin.",
+                msg_overlap: "Seçtiğiniz saatte (veya çok yakınında) zaten bir rezervasyon bulunmaktadır. Lütfen başka bir saat seçin.",
+                msg_success_supabase: "Rezervasyon Talebiniz Alındı!",
+                msg_success: "Rezervasyon Talebiniz Alındı",
+                msg_telegram: "Telegram bildirimi gönderiliyor...",
+                msg_saving: "Gönderiliyor...",
+                quick_from: "Nereden?",
+                quick_to: "Nereye?",
+                quick_passengers: "Yolcular",
+                quick_search: "Ara",
+                sb_support: "Canlı Destek",
+                sb_whatsapp: "WhatsApp Destek",
+                sb_telegram: "Telegram Destek",
+                sb_lang: "Dil / Language",
+                sb_admin: "Yönetim Paneli Girişi",
+                active_services_title: "Aktif Hizmet Detayları",
+                active_services_count: "3 aktif hizmet",
+                label_flight_date_arr: "Uçak İniş Tarihi",
+                label_flight_time_arr: "Uçak İniş Saati",
+                label_flight_no_arr: "Uçuş Numarası",
+                label_address_arr: "Bırakılacak Otel / Adres",
+                label_flight_date_dep: "Uçak Kalkış Tarihi",
+                label_flight_time_dep: "Uçak Kalkış Saati",
+                label_flight_no_dep: "Dönüş Uçuş Kodu",
+                label_address_dep: "Alınacak Otel / Adres",
+                label_passenger_1: "1. Yolcu Bilgileri",
+                label_passenger_other: "Yolcu İsimleri",
+                placeholder_passenger_other: "Ad Soyad giriniz",
+                label_special_note: "Özel Notunuz",
+                price_label: "Tahmini Transfer Ücreti",
+                label_kvkk: "Kişisel verilerimin KVKK kapsamında işlenmesini ve transfer şartlarını kabul ediyorum.",
+                success_title: "Rezervasyonunuz Alındı!",
+                success_desc: "Talebiniz başarıyla alınmıştır. Şoförümüz en kısa sürede sizinle iletişime geçecektir.",
+                btn_close: "Tamam",
+                placeholder_date: "Tarih Seçiniz",
+                msg_max_passengers: "Toplam yolcu sayısı en fazla 15 olabilir.",
+                label_info_confirm: "Girdiğim bilgilerin (Tarih, Saat, Telefon vb.) doğru olduğunu onaylıyorum.",
+                msg_info_confirm: "Lütfen bilgilerin doğruluğunu onaylayın.",
+                step_1: "Hızlı Plan",
+                step_2: "Detaylar",
+                step_3: "İletişim",
+                label_adult: "Yetişkin",
+                label_child: "Çocuk",
+                label_baby: "Bebek",
+                label_vehicle: "Araç Seçimi",
+                label_recommended: "Önerilen",
+                pax_1_6: "1-6 Kişi",
+                pax_7_15: "7-15 Kişi",
+                modal_title_2: "Rezervasyonu Tamamla",
+                modal_desc_2: "Lütfen aşağıdaki detayları doldurunuz",
+                section_arrival: "Geliş Bilgileriniz",
+                section_departure: "Dönüş Bilgileriniz",
+                section_pickup: "Alınış Detayları",
+                placeholder_hotel: "Otel adı veya açık adres",
+                placeholder_flight_no: "Örn: TK1834",
+                vehicle_visual_notice: "* Araç fotoğrafları görsel amaçlıdır."
+            },
+            en: {
+                title: "Egece Transfer - Airport & Hotel VIP Transfer",
+                hero_badge: "Antalya Airport (AYT) VIP Transport",
+                hero_title: "Egece Transfer <br> <span class=\"text-amber-500\">VIP Transfer Services</span>",
+                hero_desc: "Comfortable 7/24 transport from Antalya Airport to Belek, Kemer, Side, Alanya and all holiday destinations with our luxury Mercedes Vito VIP vehicles. No credit card details required, pay in the vehicle.",
+                form_title: "Quick Travel Plan",
+                form_desc: "Please choose your transfer details",
+                label_name: "Your Name & Surname",
+                label_phone: "Phone Number",
+                label_from: "Pickup Location (From)",
+                label_to: "Drop-off Location (To)",
+                label_date: "Transfer Date",
+                label_time: "Transfer Time",
+                label_payment: "Payment Method",
+                payment_cash: "Cash/POS in Car",
+                payment_cash_desc: "Card or Cash payment",
+                payment_transfer: "Bank Transfer",
+                payment_transfer_desc: "Via bank transfer/EFT",
+                btn_book: "Book Now",
+                opt_airport: "Antalya Airport (AYT)",
+                badge_karşılama: "24/7 Meet & Greet",
+                badge_karşılama_desc: "We track flight delays at Antalya Airport and meet you at the gate with your name when your flight lands.",
+                badge_ödeme: "Pay Safely in Car",
+                badge_ödeme_desc: "Do not provide credit card details when booking. Pay safely in the vehicle during your journey.",
+                badge_konfor: "VIP Vito Comfort",
+                badge_konfor_desc: "Comfortable travel with large luggage capacity, air conditioning, luxury leather seats, and professional drivers.",
+                footer_desc: "Egece Transfer - Airport Transfer Services",
+                footer_copy: "© 2026 Egece Transfer. All rights reserved.",
+                msg_required: "Please fill in all fields.",
+                msg_invalid_phone: "Please enter a valid phone number.",
+                msg_overlap: "There is already a booking at (or very close to) your selected time. Please choose another time.",
+                msg_success_supabase: "Booking request received!",
+                msg_success: "Booking Request Received",
+                msg_telegram: "Sending Telegram notification...",
+                msg_saving: "Sending...",
+                quick_from: "From?",
+                quick_to: "To?",
+                quick_passengers: "Passengers",
+                quick_search: "Search",
+                sb_support: "Live Support",
+                sb_whatsapp: "WhatsApp Support",
+                sb_telegram: "Telegram Support",
+                sb_lang: "Language",
+                sb_admin: "Admin Panel Login",
+                active_services_title: "Active Service Details",
+                active_services_count: "3 active services",
+                label_flight_date_arr: "Flight Arrival Date",
+                label_flight_time_arr: "Flight Arrival Time",
+                label_flight_no_arr: "Flight Number",
+                label_address_arr: "Drop-off Hotel / Address",
+                label_flight_date_dep: "Flight Departure Date",
+                label_flight_time_dep: "Flight Departure Time",
+                label_flight_no_dep: "Return Flight Code",
+                label_address_dep: "Pickup Hotel / Address",
+                label_passenger_1: "1. Passenger Details",
+                label_passenger_other: "Passenger Names",
+                placeholder_passenger_other: "Enter name & surname",
+                label_special_note: "Special Note",
+                price_label: "Estimated Transfer Price",
+                label_kvkk: "I consent to the processing of my personal data under KVKK and accept the transfer terms.",
+                success_title: "Booking Received!",
+                success_desc: "Your request has been successfully received. Our driver will contact you as soon as possible.",
+                btn_close: "OK",
+                placeholder_date: "Select Date",
+                step_1: "Quick Plan",
+                step_2: "Details",
+                step_3: "Contact",
+                label_adult: "Adult",
+                label_child: "Child",
+                label_baby: "Infant",
+                label_vehicle: "Vehicle Selection",
+                label_recommended: "Recommended",
+                pax_1_6: "1-6 Persons",
+                pax_7_15: "7-15 Persons",
+                modal_title_2: "Complete Reservation",
+                modal_desc_2: "Please fill in the details below",
+                section_arrival: "Arrival Details",
+                section_departure: "Departure Details",
+                section_pickup: "Pickup Details",
+                placeholder_hotel: "Hotel name or full address",
+                placeholder_flight_no: "Ex: TK1834",
+                vehicle_visual_notice: "* Vehicle photos are for visual purposes only."
+            },
+            ru: {
+                title: "Egece Transfer - VIP трансфер из аэропорта и в отель",
+                hero_badge: "VIP-транспорт в аэропорту Анталии (AYT)",
+                hero_title: "Egece Transfer <br> <span class=\"text-amber-500\">Услуги VIP трансфера</span>",
+                hero_desc: "Комфортный трансфер 24/7 из аэропорта Анталии в Belek, Kemer, Side, Alanya  и все курортные направления на наших роскошных автомобилях Mercedes Vito VIP. Данные кредитной карты не требуются, оплата в автомобиле.",
+                form_title: "Быстрый план поездки",
+                form_desc: "Пожалуйста, выберите детали трансфера",
+                label_name: "Ваше имя и фамилия",
+                label_phone: "Номер телефона",
+                label_from: "Место отправления (Откуда)",
+                label_to: "Место назначения (Куда)",
+                label_date: "Дата трансфера",
+                label_time: "Время трансфера",
+                label_payment: "Способ оплаты",
+                payment_cash: "Наличные/POS в авто",
+                payment_cash_desc: "Оплата картой или наличными",
+                payment_transfer: "Перевод на счет",
+                payment_transfer_desc: "Банковским переводом",
+                btn_book: "Забронировать",
+                opt_airport: "Аэропорт Анталии (AYT)",
+                badge_karşılama: "Встреча 24/7",
+                badge_karşılama_desc: "Мы отслеживаем задержки рейсов в аэропорту Анталии и встречаем вас у ворот с вашим именем по прибытии.",
+                badge_ödeme: "Безопасная оплата",
+                badge_ödeme_desc: "Не предоставляйте данные кредитной карты при бронировании. Оплачивайте безопасно в автомобиле.",
+                badge_konfor: "VIP Vito Комфорт",
+                badge_konfor_desc: "Комфортное путешествие с большим багажным отделением, кондиционером, кожаными сиденьями и профессиональными водителями.",
+                footer_desc: "Egece Transfer - Услуги трансфера из аэропорта",
+                footer_copy: "© 2026 Egece Transfer. Все права защищены.",
+                msg_required: "Пожалуйста, заполните все поля.",
+                msg_invalid_phone: "Пожалуйста, введите корректный номер телефона.",
+                msg_overlap: "На выбранное вами время уже есть бронирование. Пожалуйста, выберите другое время.",
+                msg_success_supabase: "Запрос на бронирование получен!",
+                msg_success: "Запрос на трансфер получен",
+                msg_telegram: "Отправка уведомления в Telegram...",
+                msg_saving: "Отправка...",
+                quick_from: "Откуда?",
+                quick_to: "Куда?",
+                quick_passengers: "Пассажиры",
+                quick_search: "Поиск",
+                sb_support: "Поддержка",
+                sb_whatsapp: "Поддержка WhatsApp",
+                sb_telegram: "Поддержка Telegram",
+                sb_lang: "Язык",
+                sb_admin: "Вход в админ-панель",
+                active_services_title: "Детали активных услуг",
+                active_services_count: "3 активные услуги",
+                label_flight_date_arr: "Дата прилета рейса",
+                label_flight_time_arr: "Время прилета рейса",
+                label_flight_no_arr: "Номер рейса",
+                label_address_arr: "Отель / Адрес доставки",
+                label_flight_date_dep: "Дата вылета рейса",
+                label_flight_time_dep: "Время вылета рейса",
+                label_flight_no_dep: "Код обратного рейса",
+                label_address_dep: "Отель / Адрес подачи",
+                label_passenger_1: "1. Данные пассажира",
+                label_passenger_other: "Имена пассажиров",
+                placeholder_passenger_other: "Введите имя и фамилию",
+                label_special_note: "Особые примечания",
+                price_label: "Стоимость трансфера",
+                label_kvkk: "Я соглашаюсь на обработку моих персональных данных в соответствии с KVKK и принимаю условия трансфера.",
+                success_title: "Бронирование получено!",
+                success_desc: "Ваш запрос успешно получен. Наш водитель свяжется с вами в ближайшее время.",
+                btn_close: "OK",
+                placeholder_date: "Выберите дату",
+                step_1: "Быстрый план",
+                step_2: "Детали",
+                step_3: "Контакт",
+                label_adult: "Взрослый",
+                label_child: "Ребенок",
+                label_baby: "Младенец",
+                label_vehicle: "Выбор транспорта",
+                label_recommended: "Рекомендуем",
+                pax_1_6: "1-6 чел.",
+                pax_7_15: "7-15 чел.",
+                modal_title_2: "Завершить бронирование",
+                modal_desc_2: "Пожалуйста, заполните детали ниже",
+                section_arrival: "Данные прибытия",
+                section_departure: "Данные отправления",
+                section_pickup: "Детали посадки",
+                placeholder_hotel: "Название отеля или полный адрес",
+                placeholder_flight_no: "Напр: TK1834",
+                vehicle_visual_notice: "* Фотографии автомобилей представлены только для визуализации."
+            },
+            de: {
+                title: "Egece Transfer - Flughafen & Hotel VIP Transfer",
+                hero_badge: "Antalya Flughafen (AYT) VIP Transport",
+                hero_title: "Egece Transfer <br> <span class=\"text-amber-500\">VIP Transfer Service</span>",
+                hero_desc: "Bequemer 24/7-Transport vom Flughafen Antalya nach Belek, Kemer, Side, Alanya und zu allen Urlaubszielen mit unseren luxuriösen Mercedes Vito VIP-Fahrzeugen. Keine Kreditkartendaten erforderlich, Zahlung im Fahrzeug.",
+                form_title: "Schneller Reiseplan",
+                form_desc: "Bitte wählen Sie Ihre Transferdetails aus",
+                label_name: "Ihr Name & Nachname",
+                label_phone: "Telefonnummer",
+                label_from: "Abholort (Von)",
+                label_to: "Zielort (Nach)",
+                label_date: "Transferdatum",
+                label_time: "Transferzeit",
+                label_payment: "Zahlungsart",
+                payment_cash: "Bar/POS im Auto",
+                payment_cash_desc: "Karten- oder Barzahlung",
+                payment_transfer: "Überweisung",
+                payment_transfer_desc: "Per Banküberweisung",
+                btn_book: "Jetzt buchen",
+                opt_airport: "Flughafen Antalya (AYT)",
+                badge_karşılama: "24/7 Abholung",
+                badge_karşılama_desc: "Wir verfolgen Flugverspätungen am Flughafen Antalya und holen Sie bei der Landung mit Ihrem Namen am Gate ab.",
+                badge_ödeme: "Sicher im Auto zahlen",
+                badge_ödeme_desc: "Geben Sie bei der Buchung keine Kreditkartendaten an. Bezahlen Sie während Ihrer Reise sicher im Auto.",
+                badge_konfor: "VIP Vito Komfort",
+                badge_konfor_desc: "Bequemes Reisen mit großem Gepäckraum, Klimaanlage, luxuriösen Ledersitzen und professionellen Fahrern.",
+                footer_desc: "Egece Transfer - Flughafentransfers",
+                footer_copy: "© 2026 Egece Transfer. Alle Rechte vorbehalten.",
+                msg_required: "Bitte füllen Sie alle Felder aus.",
+                msg_invalid_phone: "Bitte geben Sie eine gültige Telefonnummer ein.",
+                msg_overlap: "Für Ihre gewählte Zeit liegt bereits eine Buchung vor. Bitte wählen Sie eine andere Zeit.",
+                msg_success_supabase: "Buchungsanfrage erhalten!",
+                msg_success: "Buchungsanfrage erhalten",
+                msg_telegram: "Telegram-Benachrichtigung wird gesendet...",
+                msg_saving: "Senden...",
+                quick_from: "Woher?",
+                quick_to: "Wohin?",
+                quick_passengers: "Personen",
+                quick_search: "Suchen",
+                sb_support: "Live-Support",
+                sb_whatsapp: "WhatsApp-Support",
+                sb_telegram: "Telegram-Support",
+                sb_lang: "Sprache",
+                sb_admin: "Admin-Bereich Login",
+                active_services_title: "Aktive Service-Details",
+                active_services_count: "3 active services",
+                label_flight_date_arr: "Flugankunftsdatum",
+                label_flight_time_arr: "Flugankunftszeit",
+                label_flight_no_arr: "Flugnummer",
+                label_address_arr: "Zielhotel / Adresse",
+                label_flight_date_dep: "Flugabflugsdatum",
+                label_flight_time_dep: "Flugabflugszeit",
+                label_flight_no_dep: "Rückflugcode",
+                label_address_dep: "Abholhotel / Adresse",
+                label_passenger_1: "1. Passagierdaten",
+                label_passenger_other: "Namen der Passagiere",
+                placeholder_passenger_other: "Name & Nachname eingeben",
+                label_special_note: "Besondere Anmerkung",
+                price_label: "Voraussichtlicher Preis",
+                label_kvkk: "Ich willige in die Verarbeitung meiner personenbezogenen Daten gemäß KVKK ein und akzeptiere die Transferbedingungen.",
+                success_title: "Buchung erhalten!",
+                success_desc: "Ihre Anfrage wurde erfolgreich empfangen. Unser Fahrer wird Sie so schnell wie möglich kontaktieren.",
+                btn_close: "OK",
+                placeholder_date: "Datum wählen",
+                step_1: "Schnellplan",
+                step_2: "Details",
+                step_3: "Kontakt",
+                label_adult: "Erwachsene",
+                label_child: "Kind",
+                label_baby: "Baby",
+                label_vehicle: "Fahrzeugauswahl",
+                label_recommended: "Empfohlen",
+                pax_1_6: "1-6 Personen",
+                pax_7_15: "7-15 Personen",
+                modal_title_2: "Reservierung abschließen",
+                modal_desc_2: "Bitte füllen Sie die folgenden Details aus",
+                section_arrival: "Ankunftsdetails",
+                section_departure: "Abflugdetails",
+                section_pickup: "Abholdetails",
+                placeholder_hotel: "Hotelname oder vollständige Adresse",
+                placeholder_flight_no: "Bsp: TK1834",
+                vehicle_visual_notice: "* Fahrzeugfotos dienen nur zu visuellen Zwecken."
+            },
+            pl: {
+                title: "Egece Transfer - VIP Transfer Lotniskowy i Hotelowy",
+                hero_badge: "Transport VIP z lotniska w Antalyi (AYT)",
+                hero_title: "Egece Transfer <br> <span class=\"text-amber-500\">Usługi transferu VIP</span>",
+                hero_desc: "Komfortowy transport 24/7 z lotniska w Antalyi do Belek, Kemer, Side, Alanyi i wszystkich kierunków wakacyjnych naszymi luksusowymi pojazdami Mercedes Vito VIP. Dane karty nie są wymagane, płatność w aucie.",
+                form_title: "Szybki Plan Podróży",
+                form_desc: "Proszę wybrać szczegóły transferu",
+                label_name: "Imię i nazwisko",
+                label_phone: "Numer telefonu",
+                label_from: "Miejsce odbioru (Skąd)",
+                label_to: "Miejsce docelowe (Dokąd)",
+                label_date: "Data transferu",
+                label_time: "Godzina transferu",
+                label_payment: "Metoda płatności",
+                payment_cash: "Gotówka/POS w aucie",
+                payment_cash_desc: "Płatność kartą lub gotówką",
+                payment_transfer: "Przelew bankowy",
+                payment_transfer_desc: "Przelewem bankowym/EFT",
+                btn_book: "Zarezerwuj teraz",
+                opt_airport: "Lotnisko w Antalyi (AYT)",
+                badge_karşılama: "Powitanie 24/7",
+                badge_karşılama_desc: "Śledzimy opóźnienia lotów na lotnimsku w Antalyi i witamy Cię na bramce z Twoim imieniem po wylądowaniu.",
+                badge_ödeme: "Bezpieczna płatność",
+                badge_ödeme_desc: "Nie podawaj danych karty podczas rezerwacji. Zapłać bezpiecznie w pojeździe podczas podróży.",
+                badge_konfor: "Komfort VIP Vito",
+                badge_konfor_desc: "Wygodna podróż z dużą pojemnością bagażnika, klimatyzacją, skórzanymi fotelami i profesjonalnymi kierowcami.",
+                footer_desc: "Egece Transfer - Usługi Transferu Lotniskowego",
+                footer_copy: "© 2026 Egece Transfer. Wszelkie prawa zastrzeżone.",
+                msg_required: "Proszę wypełnić wszystkie pola.",
+                msg_invalid_phone: "Proszę podać poprawny numer telefonu.",
+                msg_overlap: "Istnieje już rezerwacja w wybranym czasie lub bardzo blisko niego. Wybierz inną godzinę.",
+                msg_success_supabase: "Wniosek o rezerwację przyjęty!",
+                msg_success: "Wniosek o rezerwację przyjęty",
+                msg_telegram: "Wysyłanie powiadomienia Telegram...",
+                msg_saving: "Wysyłanie...",
+                quick_from: "Skąd?",
+                quick_to: "Dokąd?",
+                quick_passengers: "Pasażerowie",
+                quick_search: "Szukaj",
+                sb_support: "Wsparcie na żywo",
+                sb_whatsapp: "Wsparcie WhatsApp",
+                sb_telegram: "Wsparcie Telegram",
+                sb_lang: "Język",
+                sb_admin: "Logowanie do panelu",
+                active_services_title: "Szczegóły aktywnych usług",
+                active_services_count: "3 aktywne usługi",
+                label_flight_date_arr: "Data przylotu lotu",
+                label_flight_time_arr: "Godzina przylotu lotu",
+                label_flight_no_arr: "Numer lotu",
+                label_address_arr: "Hotel / Adres docelowy",
+                label_flight_date_dep: "Data odlotu lotu",
+                label_flight_time_dep: "Godzina odlotu lotu",
+                label_flight_no_dep: "Kod lotu powrotnego",
+                label_address_dep: "Hotel / Adres odbioru",
+                label_passenger_1: "1. Dane pasażera",
+                label_passenger_other: "Nazwiska pasażerów",
+                placeholder_passenger_other: "Wpisz imię i nazwisko",
+                label_special_note: "Uwagi specjalne",
+                price_label: "Szacowana cena",
+                label_kvkk: "Wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z KVKK i akceptuję warunki transferu.",
+                success_title: "Rezerwacja przyjęta!",
+                success_desc: "Twój wniosek został pomyślnie przyjęty. Nasz kierowca skontaktuje się z Tobą jak najszybciej.",
+                btn_close: "OK",
+                placeholder_date: "Wybierz datę",
+                step_1: "Szybki Plan",
+                step_2: "Szczegóły",
+                step_3: "Kontakt",
+                label_adult: "Dorosły",
+                label_child: "Dziecko",
+                label_baby: "Niemowlę",
+                label_vehicle: "Wybór pojazdu",
+                label_recommended: "Polecane",
+                pax_1_6: "1-6 Osób",
+                pax_7_15: "7-15 Osób",
+                modal_title_2: "Dokończ rezerwację",
+                modal_desc_2: "Proszę wypełnić poniższe szczegóły",
+                section_arrival: "Szczegóły Przylotu",
+                section_departure: "Szczegóły Wylotu",
+                section_pickup: "Szczegóły Odbioru",
+                placeholder_hotel: "Nazwa hotelu lub pełny adres",
+                placeholder_flight_no: "Np: TK1834",
+                vehicle_visual_notice: "* Zdjęcia pojazdów służą wyłącznie do celów wizualnych."
+            },
+            kk: {
+                title: "Egece Transfer - Әуежай және Қонақ үй VIP трансфері",
+                hero_badge: "Анталия әуежайы (AYT) VIP тасымалы",
+                hero_title: "Egece Transfer <br> <span class=\"text-amber-500\">VIP трансфер қызметі</span>",
+                hero_desc: "Анталия әуежайынан Белек, Kemer, Side, Alanya  және барлық демалыс орындарына біздің сәнді Mercedes Vito VIP көліктерімізбен 7/24 жайлы тасымалдау. Несие картасының деректері қажет емес, төлем көлікте жасалады.",
+                form_title: "Жылдам жол жоспары",
+                form_desc: "Трансфер мәліметтерін таңдаңыз",
+                label_name: "Аты-жөніңіз",
+                label_phone: "Telefon нөмірі",
+                label_from: "Алу нүктесі (Қайдан)",
+                label_to: "Varış Noktası (Nereye)",
+                label_date: "Трансфер күні",
+                label_time: "Трансфер уақыты",
+                label_payment: "Төлем әдісі",
+                payment_cash: "Көлікте қолма-қол/POS",
+                payment_cash_desc: "Карта немесе қолма-қол төлем",
+                payment_transfer: "Шотқа аудару",
+                payment_transfer_desc: "Банк аударымы арқылы",
+                btn_book: "Брондау",
+                opt_airport: "Анталия әуежайы (AYT)",
+                badge_karşılama: "7/24 Kүтіп алу",
+                badge_karşılama_desc: "Біз Анталия әуежайындағы рейстердің кешігуін қадағалаймыз және сіздің рейсіңіз қонған кезде сізді есіміңізбен күтіп аламыз.",
+                badge_ödeme: "Қауіпсіз төлеу",
+                badge_ödeme_desc: "Брондау кезінде несие картасының деректерін бермеңіz. Төлемді көлікте қауіпсіз жасаңыз.",
+                badge_konfor: "VIP Vito Жайлылығы",
+                badge_konfor_desc: "Кең багаж көлемі, кондиционер, сәнді былғары орындықтар және кәсіби жүргізушіlerмен жайлы саяхат.",
+                footer_desc: "Әуежай transferi қызметтері - Egece Transfer",
+                footer_copy: "© 2026 Egece Transfer. Барлық құқықтар қорğалған.",
+                msg_required: "Барлық өрістерді толтырыңыз.",
+                msg_invalid_phone: "Жарамды телефон нөмірін енгізіңіз.",
+                msg_overlap: "Сіз таңдаған уақытта (немесе оған өте жақын) брондау бар. Басқа уақыtты таңдаңыз.",
+                msg_success_supabase: "Брондау сұранысы қабылданды!",
+                msg_success: "Брондау сұранысы қабылданды",
+                msg_telegram: "Telegram хабарламасы жіберілуде...",
+                msg_saving: "Жіберілуде...",
+                quick_from: "Қайдан?",
+                quick_to: "Қайда?",
+                quick_passengers: "Жолаушылар",
+                quick_search: "Іздеу",
+                sb_support: "Қолдау қызметі",
+                sb_whatsapp: "WhatsApp қолдау",
+                sb_telegram: "Telegram қолдау",
+                sb_lang: "Тіл",
+                sb_admin: "Админ paneline кіру",
+                active_services_title: "Белсенді қызмет мәліметтері",
+                active_services_count: "3 белсенді қызмет",
+                label_flight_date_arr: "Ұшақтың қону күні",
+                label_flight_time_arr: "Ұшақтың қону уақыты",
+                label_flight_no_arr: "Рейс нөмірі",
+                label_address_arr: "Жеткізілетін қонақ үй / Мекенжай",
+                label_flight_date_dep: "Ұшақтың ұшу күні",
+                label_flight_time_dep: "Ұшақтың ұшу уақыты",
+                label_flight_no_dep: "Қайту рейс коды",
+                label_address_dep: "Алынатын қонақ үй / Мекенжай",
+                label_passenger_1: "1. Жолаушы мәліметтері",
+                label_passenger_other: "Жолаушы есімдері",
+                placeholder_passenger_other: "Аты-жөнін енгізіңіз",
+                label_special_note: "Арнайы ескертпе",
+                price_label: "Болжалды баға",
+                label_kvkk: "Мен дербес деректерімнің KVKK аясында өңделуіне келісемін және трансфер шарттарын қабылдаймын.",
+                success_title: "Брондау қабылданды!",
+                success_desc: "Тапсырысыңыз сәтті қабылданды. Жүргізушіміз сізбен тез арада хабарласады.",
+                btn_close: "Жарайды",
+                placeholder_date: "Күнді таңдаңыз",
+                step_1: "Жылдам жоспар",
+                step_2: "Мәліметтер",
+                step_3: "Байланыс",
+                label_adult: "Ересек",
+                label_child: "Бала",
+                label_baby: "Сәби",
+                label_vehicle: "Көлік таңдау",
+                label_recommended: "Ұсынылады",
+                pax_1_6: "1-6 адам",
+                pax_7_15: "7-15 адам",
+                modal_title_2: "Брондауды аяқтау",
+                modal_desc_2: "Төмендегі мәліметтерді толтырыңыз",
+                section_arrival: "Келу мәліметтері",
+                section_departure: "Ұшу мәліметтері",
+                section_pickup: "Алу мәліметтері",
+                placeholder_hotel: "Қонақ үй атауы немесе толық мекенжай",
+                placeholder_flight_no: "Мысалы: TK1834",
+                vehicle_visual_notice: "* Көлік суреттері тек көрнекі мақсатта берілген."
+            }
+        };
+
+        window.changeLanguage = function(lang) {
+            if (!TRANSLATIONS[lang]) return;
+            currentLang = lang;
+            
+            document.title = TRANSLATIONS[lang].title;
+
+            const elements = document.querySelectorAll("[data-translate]");
+            elements.forEach(el => {
+                const key = el.getAttribute("data-translate");
+                if (TRANSLATIONS[lang][key]) {
+                    el.innerHTML = TRANSLATIONS[lang][key];
+                }
+            });
+
+            const nameInput = document.getElementById("isim");
+            if (nameInput) {
+                nameInput.placeholder = "";
+            }
+
+            const dateInputCard = document.getElementById("transfer_tarih");
+            if (dateInputCard && dateInputCard.type === "text") {
+                dateInputCard.placeholder = TRANSLATIONS[lang].placeholder_date || "Tarih Seçiniz";
+            }
+
+            // Translate Route Selectors Options in the Card
+            const cardFrom = document.getElementById("nereden");
+            if (cardFrom && cardFrom.options[0]) cardFrom.options[0].text = TRANSLATIONS[lang].quick_from;
+            if (cardFrom && cardFrom.options[1]) cardFrom.options[1].text = TRANSLATIONS[lang].opt_airport || "Antalya Havalimanı (AYT)";
+
+            const cardTo = document.getElementById("nereye");
+            if (cardTo && cardTo.options[0]) cardTo.options[0].text = TRANSLATIONS[lang].quick_to;
+            if (cardTo && cardTo.options[1]) cardTo.options[1].text = TRANSLATIONS[lang].opt_airport || "Antalya Havalimanı (AYT)";
+
+            const mainYolcular = document.getElementById("yolcu_sayisi");
+            if (mainYolcular) {
+                mainYolcular.options[0].text = `1`;
+                mainYolcular.options[1].text = `2`;
+                mainYolcular.options[2].text = `3`;
+                mainYolcular.options[3].text = `4`;
+                mainYolcular.options[4].text = `5`;
+                mainYolcular.options[5].text = `6`;
+            }
+
+            if (phoneInputIti) {
+                try {
+                    if (lang === "tr") phoneInputIti.setCountry("tr");
+                    else if (lang === "ru") phoneInputIti.setCountry("ru");
+                    else if (lang === "de") phoneInputIti.setCountry("de");
+                    else if (lang === "en") phoneInputIti.setCountry("gb");
+                    else if (lang === "pl") phoneInputIti.setCountry("pl");
+                    else if (lang === "kk") phoneInputIti.setCountry("kz");
+                } catch (e) {
+                    console.warn("Telefon alanı ülkesi güncellenemedi:", e);
+                }
+            }
+
+            // Force update price dynamic label on language change
+            const priceLabel = document.getElementById("priceLabel");
+            if (priceLabel) {
+                priceLabel.textContent = TRANSLATIONS[lang].price_label;
+            }
+        }
+
+        window.selectLanguage = function(lang) {
+            changeLanguage(lang);
+            const modal = document.getElementById("langModal");
+            if (modal) {
+                modal.classList.add("opacity-0", "pointer-events-none");
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 300);
+            }
+        };
+
+        window.openBookingModal = function() {
+            // Reset modal body visibility
+            const formBody = document.getElementById("modalFormBody");
+            const successBody = document.getElementById("modalSuccessBody");
+            if (formBody) formBody.classList.remove("hidden");
+            if (successBody) successBody.classList.add("hidden");
+
+            // Validate selections first
+            const nereden = document.getElementById("nereden").value;
+            const nereye = document.getElementById("nereye").value;
+            
+            const yetiskin = parseInt(document.getElementById("yetiskin_sayisi").value) || 1;
+            const cocuk = parseInt(document.getElementById("cocuk_sayisi").value) || 0;
+            const bebek = parseInt(document.getElementById("bebek_sayisi").value) || 0;
+            const yolcuSayisi = yetiskin + cocuk + bebek;
+
+            const isAirportInvolved = (nereden === "Antalya Havalimanı (AYT)" || nereye === "Antalya Havalimanı (AYT)");
+            
+            // If airport is not involved, date/time is required on card
+            const tarih = document.getElementById("transfer_tarih").value;
+            const saat = document.getElementById("transfer_saat").value;
+
+            if (!nereden || !nereye) {
+                showToast(TRANSLATIONS[currentLang]?.msg_required || "Lütfen tüm alanları eksiksiz doldurun.", "error");
+                return;
+            }
+
+            if (!isAirportInvolved && (!tarih || !saat)) {
+                showToast(TRANSLATIONS[currentLang]?.msg_required || "Lütfen tüm alanları eksiksiz doldurun.", "error");
+                return;
+            }
+
+            // Generate Dynamic Fields based on Pickup (Nereden)
+            const dynamicContainer = document.getElementById("dynamicFieldsContainer");
+            const isAirportArrival = nereden === "Antalya Havalimanı (AYT)";
+            const isAirportDeparture = nereye === "Antalya Havalimanı (AYT)";
+
+            // Determine the selected region for Hotels Datalist
+            const selectedRegion = isAirportArrival ? nereye : nereden;
+            let datalistHtml = '<datalist id="hotelList">';
+            if (HOTELS_DB[selectedRegion]) {
+                HOTELS_DB[selectedRegion].forEach(hotel => {
+                    datalistHtml += `<option value="${hotel}">`;
+                });
+            }
+            datalistHtml += '</datalist>';
+
+            const t = TRANSLATIONS[currentLang];
+
+            if (isAirportArrival) {
+                // Airport Arrival mode (Geliş Bilgileri)
+                dynamicContainer.innerHTML = `
+                    <span class="block text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">${t.section_arrival}</span>
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="flight_date" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_flight_date_arr}</label>
+                                <input type="text" id="flight_date" required placeholder="${t.placeholder_date || 'Tarih Seçiniz'}" onfocus="(this.type='date')" onblur="if(!this.value) this.type='text'" class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs text-left">
+                            </div>
+                            <div>
+                                <label for="flight_time" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_flight_time_arr}</label>
+                                <input type="time" id="flight_time" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs text-left">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label for="flight_no" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_flight_no_arr}</label>
+                                <input type="text" id="flight_no" placeholder="${t.placeholder_flight_no}" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                            </div>
+                            <div>
+                                <label for="address_details" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_address_arr}</label>
+                                <input type="text" id="address_details" list="hotelList" autocomplete="off" placeholder="${t.placeholder_hotel}" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                                ${datalistHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (isAirportDeparture) {
+                // Airport Departure mode (Dönüş Bilgileri)
+                dynamicContainer.innerHTML = `
+                    <span class="block text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">${t.section_departure}</span>
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="flight_date" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_flight_date_dep}</label>
+                                <input type="text" id="flight_date" required placeholder="${t.placeholder_date || 'Tarih Seçiniz'}" onfocus="(this.type='date')" onblur="if(!this.value) this.type='text'" class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs text-left">
+                            </div>
+                            <div>
+                                <label for="flight_time" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_flight_time_dep}</label>
+                                <input type="time" id="flight_time" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs text-left">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label for="flight_no" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_flight_no_dep}</label>
+                                <input type="text" id="flight_no" placeholder="${t.placeholder_flight_no}" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                            </div>
+                            <div>
+                                <label for="address_details" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_address_dep}</label>
+                                <input type="text" id="address_details" list="hotelList" autocomplete="off" placeholder="${t.placeholder_hotel}" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                                ${datalistHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // City-to-City transfer mode (No Flight Info)
+                dynamicContainer.innerHTML = `
+                    <span class="block text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-3">${t.section_pickup}</span>
+                    <div class="space-y-3">
+                        <div class="bg-slate-950/65 p-3 rounded-lg border border-slate-800 text-xs">
+                            <span class="text-slate-400 block">${t.label_date}: <strong class="text-amber-500">${formatDateTime(tarih + 'T' + saat + ':00')}</strong></span>
+                        </div>
+                        <div>
+                            <label for="address_details" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${t.label_address_dep}</label>
+                            <input type="text" id="address_details" list="hotelList" autocomplete="off" placeholder="${t.placeholder_hotel}" required class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                            ${datalistHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Generate other passenger fields if count > 1
+            const passengersContainer = document.getElementById("otherPassengersContainer");
+            const passengersInputs = document.getElementById("otherPassengersInputs");
+            passengersInputs.innerHTML = "";
+
+            if (yolcuSayisi > 1) {
+                passengersContainer.classList.remove("hidden");
+                for (let i = 2; i <= yolcuSayisi; i++) {
+                    passengersInputs.innerHTML += `
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">${i}. ${t.label_passenger_1.replace('1. ', '').replace('Bilgileri', '')}</label>
+                            <input type="text" name="other_passenger_name" required placeholder="${t.placeholder_passenger_other}" class="block w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 text-xs">
+                        </div>
+                    `;
+                }
+            } else {
+                passengersContainer.classList.add("hidden");
+            }
+
+            // Re-apply static text translations for modal labels that might have updated
+            document.getElementById("lbl_passenger_1").textContent = t.label_passenger_1;
+            document.getElementById("lbl_passenger_other").textContent = t.label_passenger_other;
+            document.getElementById("lbl_name_modal").textContent = t.label_name;
+            document.getElementById("lbl_phone_modal").textContent = t.label_phone;
+            document.getElementById("lbl_special_note").textContent = t.label_special_note;
+            document.getElementById("lbl_kvkk").textContent = t.label_kvkk;
+
+            const modal = document.getElementById("bookingModal");
+            if (modal) {
+                modal.style.display = "flex";
+                setTimeout(() => {
+                    modal.classList.remove("opacity-0", "pointer-events-none");
+                }, 10);
+            }
+        };
+
+        window.closeBookingModal = function() {
+            const modal = document.getElementById("bookingModal");
+            if (modal) {
+                modal.classList.add("opacity-0", "pointer-events-none");
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 300);
+            }
+        };
+
+        // Date helper (format TR)
+        function formatDateTime(dateTimeStr) {
+            if (!dateTimeStr) return "";
+            const date = new Date(dateTimeStr);
+            return date.toLocaleString('tr-TR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Telegram sender
+        function sendTelegramNotification(message) {
+            return new Promise((resolve) => {
+                if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+                    resolve();
+                    return;
+                }
+                const encodedMessage = encodeURIComponent(message);
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodedMessage}`;
+                
+                let finished = false;
+                const done = () => {
+                    if (!finished) {
+                        finished = true;
+                        resolve();
+                    }
+                };
+
+                fetch(url, { mode: 'no-cors' }).then(done).catch(done);
+                setTimeout(done, 1500);
+            });
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'info') {
+            const toast = document.createElement("div");
+            toast.className = "fixed bottom-5 right-5 z-[9999] flex items-center px-4 py-3 rounded-lg border text-xs font-semibold shadow-lg transition-all duration-300 transform translate-y-10 opacity-0";
+            
+            if (type === 'success') {
+                toast.className += " bg-emerald-950 text-emerald-400 border-emerald-500/50";
+            } else if (type === 'error') {
+                toast.className += " bg-rose-950 text-rose-400 border-rose-500/50";
+            } else {
+                toast.className += " bg-slate-800 text-amber-400 border-amber-500/50";
+            }
+
+            let iconSvg = '';
+            if (type === 'success') {
+                iconSvg = `<svg class="w-5 h-5 mr-3 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+            } else if (type === 'error') {
+                iconSvg = `<svg class="w-5 h-5 mr-3 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+            } else {
+                iconSvg = `<svg class="w-5 h-5 mr-3 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+            }
+
+            toast.innerHTML = `<div class="flex items-center">${iconSvg}<span>${message}</span></div>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove("translate-y-10", "opacity-0");
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add("translate-y-10", "opacity-0");
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 4000);
+        }
+
+        function validatePassengerCount(selectEl) {
+            const yetiskinEl = document.getElementById("yetiskin_sayisi");
+            const cocukEl = document.getElementById("cocuk_sayisi");
+            const bebekEl = document.getElementById("bebek_sayisi");
+            
+            const yetiskin = parseInt(yetiskinEl.value) || 0;
+            const cocuk = parseInt(cocukEl.value) || 0;
+            const bebek = parseInt(bebekEl.value) || 0;
+            
+            const total = yetiskin + cocuk + bebek;
+            
+            if (total > 15) {
+                showToast(TRANSLATIONS[currentLang]?.msg_max_passengers || "Toplam yolcu sayısı en fazla 15 olabilir.", "error");
+                selectEl.value = selectEl.getAttribute("data-last-val") || (selectEl.id === 'yetiskin_sayisi' ? "1" : "0");
+                return;
+            } else {
+                yetiskinEl.setAttribute("data-last-val", yetiskinEl.value);
+                cocukEl.setAttribute("data-last-val", cocukEl.value);
+                bebekEl.setAttribute("data-last-val", bebekEl.value);
+            }
+
+            // Vehicle logic
+            const radios = document.getElementsByName('arac_secimi');
+            const sprinterRadio = document.getElementById('radio_sprinter');
+            const sprinterBadge = document.getElementById('sprinter_badge');
+            
+            if (total > 6) {
+                sprinterRadio.checked = true;
+                if(sprinterBadge) sprinterBadge.classList.remove('hidden');
+                
+                radios.forEach(r => {
+                    if (r.value !== "Mercedes Sprinter") {
+                        r.disabled = true;
+                        r.parentElement.classList.add('opacity-40', 'cursor-not-allowed');
+                        r.parentElement.classList.remove('cursor-pointer');
+                    }
+                });
+            } else {
+                if(sprinterBadge) sprinterBadge.classList.add('hidden');
+                radios.forEach(r => {
+                    r.disabled = false;
+                    r.parentElement.classList.remove('opacity-40', 'cursor-not-allowed');
+                    r.parentElement.classList.add('cursor-pointer');
+                });
+                
+                if (sprinterRadio.checked) {
+                    const vitoRadio = document.querySelector('input[value="Mercedes Vito VIP"]');
+                    if (vitoRadio) vitoRadio.checked = true;
+                }
+            }
+        }
+
+        window.submitReservation = async function() {
+            // Anti-Spam Cooldown Logic (30 seconds)
+            const lastBookingTime = localStorage.getItem('lastBookingTimeTransfer');
+            if (lastBookingTime) {
+                const timeDiff = Date.now() - parseInt(lastBookingTime);
+                if (timeDiff < 30000) {
+                    const timeLeft = Math.ceil((30000 - timeDiff) / 1000);
+                    const trMsg = currentLang === "tr" ? `Lütfen yeni bir rezervasyon için ${timeLeft} saniye bekleyiniz.` : `Please wait ${timeLeft} seconds.`;
+                    showToast(trMsg, "error");
+                    return;
+                }
+            }
+
+            const submitBtn = document.getElementById("submitBtn");
+            const btnText = document.getElementById("btnText");
+            const btnSpinner = document.getElementById("btnSpinner");
+
+            const isim = document.getElementById("isim").value.trim();
+            const telefon = phoneInputIti ? phoneInputIti.getNumber() : document.getElementById("telefon").value.trim();
+            const nereden = document.getElementById("nereden").value;
+            const nereye = document.getElementById("nereye").value;
+            
+            const yetiskin = document.getElementById("yetiskin_sayisi").value;
+            const cocuk = document.getElementById("cocuk_sayisi").value;
+            const bebek = document.getElementById("bebek_sayisi").value;
+            const totalYolcu = parseInt(yetiskin) + parseInt(cocuk) + parseInt(bebek);
+            const yolcular = `${totalYolcu} (Yetişkin: ${yetiskin}, Çocuk: ${cocuk}, Bebek: ${bebek})`;
+            const odeme_yontemi = "Araçta Ödeme";
+            
+            const selectedVehicleEl = document.querySelector('input[name="arac_secimi"]:checked');
+            const secilen_arac = selectedVehicleEl ? selectedVehicleEl.value : "Bilinmiyor";
+            
+            const calculatedPrice = window.lastCalculatedPrice || 0;
+            const ozel_not = document.getElementById("ozel_not").value.trim();
+
+            const isAirportInvolved = (nereden === "Antalya Havalimanı (AYT)" || nereye === "Antalya Havalimanı (AYT)");
+            
+            // Dynamic fields
+            const flightDateInput = document.getElementById("flight_date");
+            const flightTimeInput = document.getElementById("flight_time");
+            const flightNoInput = document.getElementById("flight_no");
+            const addressDetailsInput = document.getElementById("address_details");
+
+            const flight_date = flightDateInput ? flightDateInput.value : '';
+            const flight_time = flightTimeInput ? flightTimeInput.value : '';
+            const flight_no = flightNoInput ? flightNoInput.value.trim() : '';
+            const address_details = addressDetailsInput ? addressDetailsInput.value.trim() : '';
+
+            // Card inputs (for non-airport)
+            const transfer_tarih = document.getElementById("transfer_tarih").value;
+            const transfer_saat = document.getElementById("transfer_saat").value;
+
+            // Compile other passengers
+            const otherNames = [];
+            document.querySelectorAll('input[name="other_passenger_name"]').forEach(input => {
+                if (input.value.trim()) {
+                    otherNames.push(input.value.trim());
+                }
+            });
+
+            // KVKK consent check
+            const kvkkChecked = document.getElementById("kvkk_consent").checked;
+            if (!kvkkChecked) {
+                const trMsg = currentLang === "tr" ? "Lütfen KVKK ve transfer şartlarını kabul edin." : (currentLang === "ru" ? "Пожалуйста, примите условия KVKK." : "Please accept terms & KVKK.");
+                showToast(trMsg, "error");
+                return;
+            }
+
+            // Info confirm check
+            const infoConfirmChecked = document.getElementById("info_confirm").checked;
+            if (!infoConfirmChecked) {
+                const trMsg = TRANSLATIONS[currentLang]?.msg_info_confirm || (currentLang === "tr" ? "Lütfen bilgilerin doğruluğunu onaylayın." : "Please confirm the accuracy of your information.");
+                showToast(trMsg, "error");
+                return;
+            }
+
+            if (phoneInputIti && !phoneInputIti.isValidNumber()) {
+                showToast(TRANSLATIONS[currentLang]?.msg_invalid_phone || "Lütfen geçerli bir telefon numarası girin.", "error");
+                return;
+            }
+
+            // Validation
+            if (!isim || !telefon || !address_details) {
+                showToast(TRANSLATIONS[currentLang]?.msg_required || "Lütfen tüm alanları eksiksiz doldurun.", "error");
+                return;
+            }
+
+            if (isAirportInvolved && (!flight_date || !flight_time || !flight_no)) {
+                showToast(TRANSLATIONS[currentLang]?.msg_required || "Lütfen tüm alanları eksiksiz doldurun.", "error");
+                return;
+            }
+
+            if (!isAirportInvolved && (!transfer_tarih || !transfer_saat)) {
+                showToast(TRANSLATIONS[currentLang]?.msg_required || "Lütfen tüm alanları eksiksiz doldurun.", "error");
+                return;
+            }
+
+            let tarih_saat = "";
+            if (isAirportInvolved) {
+                tarih_saat = `${flight_date}T${flight_time}:00`;
+            } else {
+                tarih_saat = `${transfer_tarih}T${transfer_saat}:00`;
+            }
+
+            if (submitBtn) submitBtn.disabled = true;
+            if (btnText) btnText.textContent = TRANSLATIONS[currentLang]?.msg_saving || "Gönderiliyor...";
+            if (btnSpinner) btnSpinner.classList.remove("hidden");
+
+            // Overlap check
+            if (supabaseClient) {
+                try {
+                    const chosenDate = new Date(tarih_saat);
+                    const minTime = new Date(chosenDate.getTime() - 2 * 60 * 60 * 1000).toISOString();
+                    const maxTime = new Date(chosenDate.getTime() + 2 * 60 * 60 * 1000).toISOString();
+
+                    const { data: overlapData, error: overlapError } = await supabaseClient
+                        .from('rezervasyonlar')
+                        .select('*')
+                        .neq('durum', 'İptal Edildi')
+                        .gte('tarih_saat', minTime)
+                        .lte('tarih_saat', maxTime);
+
+                    if (overlapError) throw overlapError;
+
+                    if (overlapData && overlapData.length > 0) {
+                        showToast(TRANSLATIONS[currentLang]?.msg_overlap || "Seçtiğiniz saatte rezervasyon bulunmaktadır.", "error");
+                        if (submitBtn) submitBtn.disabled = false;
+                        if (btnText) btnText.textContent = TRANSLATIONS[currentLang]?.btn_book || "Rezervasyon Yap";
+                        if (btnSpinner) btnSpinner.classList.add("hidden");
+                        return;
+                    }
+                } catch (err) {
+                    console.warn("Overlap check failed:", err);
+                }
+            }
+
+            // Save to Supabase
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('rezervasyonlar')
+                        .insert([
+                            { isim, telefon, nereden, nereye, tarih_saat: new Date(tarih_saat).toISOString(), odeme_yontemi, durum: 'Beklemede' }
+                        ])
+                        .select();
+
+                    if (error) throw error;
+                    showToast(TRANSLATIONS[currentLang]?.msg_success_supabase || "Rezervasyon sisteme kaydedildi! WhatsApp'a yönlendiriliyorsunuz...", "success");
+                } catch (err) {
+                    console.warn("Supabase save failed:", err);
+                    showToast(TRANSLATIONS[currentLang]?.msg_success || "WhatsApp'a yönlendiriliyorsunuz...", "success");
+                }
+            } else {
+                showToast(TRANSLATIONS[currentLang]?.msg_success || "WhatsApp'a yönlendiriliyorsunuz...", "success");
+            }
+
+            const formattedDate = formatDateTime(tarih_saat);
+            const isAirportArrival = nereden === "Antalya Havalimanı (AYT)";
+            const isAirportDeparture = nereye === "Antalya Havalimanı (AYT)";
+            
+            let tripDetailsMsg = '';
+            let dateOutputLine = `📅 Planlanan Tarih & Saat: ${formattedDate}`;
+
+            if (isAirportArrival) {
+                dateOutputLine = `📅 Transfer Zamanı: (Uçuş biletine göre admin belirleyecektir)`;
+                tripDetailsMsg = 
+`🛫 Geliş Bilgileri:
+• Uçak İniş Zamanı: ${formatDateTime(flight_date + 'T' + flight_time + ':00')}
+• Uçuş Numarası: ${flight_no}
+• Bırakılacak Otel/Adres: ${address_details}`;
+            } else if (isAirportDeparture) {
+                dateOutputLine = `📅 Transfer Zamanı: (Uçuş kalkış saatine göre admin belirleyecektir)`;
+                tripDetailsMsg = 
+`🛫 Dönüş Bilgileri:
+• Uçak Kalkış Zamanı: ${formatDateTime(flight_date + 'T' + flight_time + ':00')}
+• Dönüş Uçuş Kodu: ${flight_no}
+• Alınacak Otel/Adres: ${address_details}`;
+            } else {
+                tripDetailsMsg = 
+`📍 Adres Bilgisi:
+• Alınacak Otel/Adres: ${address_details}`;
+            }
+
+            let passengerListMsg = '';
+            if (otherNames.length > 0) {
+                passengerListMsg = `\n👥 Diğer Yolcular:\n` + otherNames.map((n, idx) => `• ${idx + 2}. Yolcu: ${n}`).join('\n');
+            }
+
+            const wpMessage = 
+`🚖 EGECE TRANSFER REZERVASYON TALEBİ
+--------------------------------------------
+👤 İsim Soyisim: ${isim}
+📞 Telefon: ${telefon}
+👥 Toplam Yolcu: ${yolcular}
+🚐 Seçilen Araç: ${secilen_arac}
+📍 Alış Noktası (Nereden): ${nereden}
+🏁 Varış Noktası (Nereye): ${nereye}
+${dateOutputLine}
+💰 Ücret: ${calculatedPrice} €
+💳 Ödeme Türü: ${odeme_yontemi}
+--------------------------------------------
+${tripDetailsMsg}${passengerListMsg}
+--------------------------------------------
+📝 Özel Not: ${ozel_not || '-'}`;
+
+            showToast(TRANSLATIONS[currentLang]?.msg_telegram || "Telegram bildirimi gönderiliyor...", "info");
+            await sendTelegramNotification(wpMessage);
+
+            const encodedMessage = encodeURIComponent(wpMessage);
+            const wpURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+            // Show Step 3 Success UI
+            const formBody = document.getElementById("modalFormBody");
+            const successBody = document.getElementById("modalSuccessBody");
+            if (formBody && successBody) {
+                const t = TRANSLATIONS[currentLang] || TRANSLATIONS.tr;
+                document.getElementById("success-title").textContent = t.success_title || "Rezervasyonunuz Alındı!";
+                document.getElementById("success-desc").textContent = t.success_desc || "Talebiniz başarıyla alınmıştır. Şoförümüz en kısa sürede sizinle iletişime geçecektir.";
+                formBody.classList.add("hidden");
+                successBody.classList.remove("hidden");
+            }
+
+            // Reset forms & state immediately
+            document.getElementById("isim").value = "";
+            document.getElementById("telefon").value = "";
+            document.getElementById("ozel_not").value = "";
+            if (submitBtn) submitBtn.disabled = false;
+            if (btnText) btnText.textContent = TRANSLATIONS[currentLang]?.btn_book || "Rezervasyon Yap";
+            if (btnSpinner) btnSpinner.classList.add("hidden");
+
+            localStorage.setItem('lastBookingTimeTransfer', Date.now().toString());
+
+            showToast(TRANSLATIONS[currentLang]?.msg_success || "Rezervasyon Talebiniz Alındı", "success");
+        };
+
+        // DOM Content Loaded Handler
+        document.addEventListener("DOMContentLoaded", () => {
+            // Init intl-tel-input
+            try {
+                const phoneInput = document.getElementById("telefon");
+                const itiFunc = window.intlTelInput || intlTelInput;
+                if (phoneInput && typeof itiFunc !== "undefined") {
+                    phoneInputIti = itiFunc(phoneInput, {
+                        initialCountry: "tr",
+                        preferredCountries: ["tr", "ru", "de", "gb", "ua", "kz"],
+                        utilsScript: "utils.js",
+                        autoPlaceholder: "aggressive",
+                        formatOnDisplay: true
+                    });
+                }
+            } catch (err) {
+                console.warn("intl-tel-input failed to init, fallback to default input:", err);
+            }
+
+            // Set min date to today
+            const dateInput = document.getElementById("transfer_tarih");
+            if (dateInput) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                dateInput.min = `${year}-${month}-${day}`;
+            }
+
+            // Listen for route changes to calculate pricing and show/hide date/time
+            const selectNereden = document.getElementById("nereden");
+            const selectNereye = document.getElementById("nereye");
+
+            function updateCalculatedPriceAndDateTime() {
+                const from = selectNereden.value;
+                const to = selectNereye.value;
+                const priceContainer = document.getElementById("priceDisplayContainer");
+                const priceValue = document.getElementById("priceValue");
+                const dateTimeSection = document.getElementById("cardDateTimeSection");
+
+                // 1. Show/Hide Date & Time in Card based on Airport involvement
+                const isAirportInvolved = (from === "Antalya Havalimanı (AYT)" || to === "Antalya Havalimanı (AYT)");
+                if (isAirportInvolved) {
+                    if (dateTimeSection) {
+                        dateTimeSection.classList.add("hidden");
+                        document.getElementById("transfer_tarih").required = false;
+                        document.getElementById("transfer_saat").required = false;
+                    }
+                } else {
+                    if (dateTimeSection) {
+                        dateTimeSection.classList.remove("hidden");
+                        document.getElementById("transfer_tarih").required = true;
+                        document.getElementById("transfer_saat").required = true;
+                    }
+                }
+
+                // 2. Calculate Pricing
+                if (!from || !to) {
+                    if (priceContainer) priceContainer.classList.add("hidden");
+                    return;
+                }
+
+                let price = null;
+                const routes = {
+                    "Antalya Havalimanı (AYT)": {
+                        "Beldibi": 40,
+                        "Göynük": 40,
+                        "Kemer": 50,
+                        "Kiriş": 50,
+                        "Çamyuva": 50,
+                        "Tekirova": 60
+                    },
+                    "Beldibi": { "Antalya Havalimanı (AYT)": 40 },
+                    "Göynük": { "Antalya Havalimanı (AYT)": 40 },
+                    "Kemer": { "Antalya Havalimanı (AYT)": 50 },
+                    "Kiriş": { "Antalya Havalimanı (AYT)": 50 },
+                    "Çamyuva": { "Antalya Havalimanı (AYT)": 50 },
+                    "Tekirova": { "Antalya Havalimanı (AYT)": 60 }
+                };
+
+                if (routes[from] && routes[from][to]) {
+                    price = routes[from][to];
+                } else if (routes[to] && routes[to][from]) {
+                    price = routes[to][from];
+                } else {
+                    price = 35; // City-to-city transfers
+                }
+
+                if (priceContainer && priceValue) {
+                    priceValue.textContent = `${price} €`;
+                    priceContainer.classList.remove("hidden");
+                    window.lastCalculatedPrice = price;
+                }
+            }
+
+            if (selectNereden) selectNereden.addEventListener("change", updateCalculatedPriceAndDateTime);
+            if (selectNereye) selectNereye.addEventListener("change", updateCalculatedPriceAndDateTime);
+        });
+    </script>
+    <!-- Floating Support Buttons -->
+    <div class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-[100] flex flex-col items-end gap-3">
+        <!-- Telegram -->
+        <a href="https://t.me/+905326908396" target="_blank" class="flex items-center justify-center w-12 h-12 bg-sky-500 text-white rounded-full shadow-lg shadow-sky-500/30 hover:bg-sky-400 hover:scale-110 transition-all duration-300 group" title="Telegram Destek">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.223-.548.223l.188-2.85 5.18-4.674c.223-.198-.054-.31-.35-.11l-6.4 4.024-2.76-.864c-.6-.18-.61-.6.125-.89l10.85-4.18c.5-.18.96.104.81.99z"/></svg>
+            <span class="absolute right-14 bg-slate-900 text-slate-100 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Telegram Destek</span>
+        </a>
+        <!-- WhatsApp -->
+        <a href="https://wa.me/905326908396" target="_blank" class="flex items-center justify-center w-14 h-14 bg-emerald-500 text-white rounded-full shadow-lg shadow-emerald-500/30 hover:bg-emerald-400 hover:scale-110 transition-all duration-300 animate-bounce group" title="WhatsApp Canlı Destek">
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            <span class="absolute right-16 bg-slate-900 text-slate-100 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">7/24 WhatsApp Destek</span>
+        </a>
+    </div>
+</body>
+</html>
