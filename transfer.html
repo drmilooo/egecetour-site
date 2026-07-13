@@ -1581,17 +1581,12 @@
                 return;
             }
 
-            if (!isAirportInvolved && (!transfer_tarih || !transfer_saat)) {
+            if (!transfer_tarih || !transfer_saat) {
                 showToast(TRANSLATIONS[currentLang]?.msg_required || "Lütfen tüm alanları eksiksiz doldurun.", "error");
                 return;
             }
 
-            let tarih_saat = "";
-            if (isAirportInvolved) {
-                tarih_saat = `${flight_date}T${flight_time}:00`;
-            } else {
-                tarih_saat = `${transfer_tarih}T${transfer_saat}:00`;
-            }
+            let tarih_saat = `${transfer_tarih}T${transfer_saat}:00`;
 
             if (submitBtn) submitBtn.disabled = true;
             if (btnText) btnText.textContent = TRANSLATIONS[currentLang]?.msg_saving || "Gönderiliyor...";
@@ -1653,14 +1648,14 @@
             let dateOutputLine = `📅 Planlanan Tarih & Saat: ${formattedDate}`;
 
             if (isAirportArrival) {
-                dateOutputLine = `📅 Transfer Zamanı: (Uçuş biletine göre admin belirleyecektir)`;
+                dateOutputLine = `📅 Transfer Zamanı: ${formattedDate}`;
                 tripDetailsMsg = 
 `🛫 Geliş Bilgileri:
 • Uçak İniş Zamanı: ${formatDateTime(flight_date + 'T' + flight_time + ':00')}
 • Uçuş Numarası: ${flight_no}
 • Bırakılacak Otel/Adres: ${address_details}`;
             } else if (isAirportDeparture) {
-                dateOutputLine = `📅 Transfer Zamanı: (Uçuş kalkış saatine göre admin belirleyecektir)`;
+                dateOutputLine = `📅 Transfer Zamanı: ${formattedDate}`;
                 tripDetailsMsg = 
 `🛫 Dönüş Bilgileri:
 • Uçak Kalkış Zamanı: ${formatDateTime(flight_date + 'T' + flight_time + ':00')}
@@ -1766,18 +1761,10 @@ ${tripDetailsMsg}${passengerListMsg}
 
                 // 1. Show/Hide Date & Time in Card based on Airport involvement
                 const isAirportInvolved = (from === "Antalya Havalimanı (AYT)" || to === "Antalya Havalimanı (AYT)");
-                if (isAirportInvolved) {
-                    if (dateTimeSection) {
-                        dateTimeSection.classList.add("hidden");
-                        document.getElementById("transfer_tarih").required = false;
-                        document.getElementById("transfer_saat").required = false;
-                    }
-                } else {
-                    if (dateTimeSection) {
-                        dateTimeSection.classList.remove("hidden");
-                        document.getElementById("transfer_tarih").required = true;
-                        document.getElementById("transfer_saat").required = true;
-                    }
+                if (dateTimeSection) {
+                    dateTimeSection.classList.remove("hidden");
+                    document.getElementById("transfer_tarih").required = true;
+                    document.getElementById("transfer_saat").required = true;
                 }
 
                 // 2. Calculate Pricing
