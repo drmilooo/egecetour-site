@@ -199,10 +199,8 @@
                         </div>
                     </div>
 
-                    <!-- reCAPTCHA Widget -->
-                    <div class="mt-4 mb-2 flex justify-center">
-                        <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
-                    </div>
+                    <!-- reCAPTCHA Widget (Invisible) -->
+                    <div class="g-recaptcha" data-sitekey="6LfISlEtAAAAAFBqIRDocFNQppGm-2fq0uUhhVgI" data-size="invisible" data-callback="onRecaptchaSuccess"></div>
 
                     <!-- KVKK Consent Checkbox -->
                     <div class="space-y-2 pt-2">
@@ -1482,12 +1480,16 @@
                 return;
             }
 
-            // reCAPTCHA validation
+            // reCAPTCHA validation (Invisible)
             if (typeof grecaptcha !== 'undefined') {
-                const recaptchaResponse = grecaptcha.getResponse();
-                if (!recaptchaResponse) {
-                    const trMsg = TRANSLATIONS[currentLang]?.msg_recaptcha || "Lütfen robot olmadığınızı doğrulayın.";
-                    showToast(trMsg, "error");
+                try {
+                    await new Promise((resolve) => {
+                        window.onRecaptchaSuccess = resolve;
+                        grecaptcha.execute();
+                    });
+                    grecaptcha.reset();
+                } catch (e) {
+                    console.error("reCAPTCHA error:", e);
                     return;
                 }
             }
